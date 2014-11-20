@@ -21,11 +21,8 @@ sudo apt-get install -y $package_list
 
 echo "Installing RVM"
 set +e
-out=`sudo curl -sSL https://get.rvm.io | bash -s stable`
-echo $out
-gpg_key=`expr match "$out" '.*recv-keys \(.*\)'`
-echo "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG: $gpg_key"
-sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys $gpg_key
+sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+sudo curl -sSL https://get.rvm.io | bash -s stable
 set -e
 sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
 
