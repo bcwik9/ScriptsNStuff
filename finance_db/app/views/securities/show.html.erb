@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Sec type:</strong>
+  <%= @security.sec_type %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @security.price %>
+</p>
+
+<p>
+  <strong>Multiplier:</strong>
+  <%= @security.multiplier %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @security.amount %>
+</p>
+
+<%= link_to 'Edit', edit_security_path(@security) %> |
+<%= link_to 'Back', securities_path %>

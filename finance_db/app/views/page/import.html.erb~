@@ -1,0 +1,11 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>import CSV data!</h1>
+    <%= form_tag import_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "Import" %>
+    <% end %>
+  </body>
+</html>

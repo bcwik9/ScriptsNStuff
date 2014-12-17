@@ -1,0 +1,35 @@
+<%= link_to 'Import CSV file', import_path %>
+<br>
+<br>
+
+<h1>Listing securities</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sec type</th>
+      <th>Price</th>
+      <th>Multiplier</th>
+      <th>Amount</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @securities.each do |security| %>
+      <tr>
+        <td><%= security.sec_type %></td>
+        <td><%= security.price %></td>
+        <td><%= security.multiplier %></td>
+        <td><%= security.amount %></td>
+        <td><%= link_to 'Show', security %></td>
+        <td><%= link_to 'Edit', edit_security_path(security) %></td>
+        <td><%= link_to 'Destroy', security, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Security', new_security_path %>

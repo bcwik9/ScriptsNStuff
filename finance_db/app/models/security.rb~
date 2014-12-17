@@ -1,0 +1,7 @@
+class Security < ActiveRecord::Base
+  belongs_to :portfolio
+
+  def self.import
+    
+  end
+end

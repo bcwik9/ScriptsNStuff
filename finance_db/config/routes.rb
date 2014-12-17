@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
+  get 'page/import'
+  get 'import', to: 'page#import'
+
+  resources :portfolios
+
+  resources :securities do
+    collection { post :import }
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'securities#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
