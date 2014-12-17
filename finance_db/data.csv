@@ -1,0 +1,11 @@
+sec_type,price,multiplier,amount,portfolio_owner
+bond,2.9,8.2,6,charlie
+bond,8.2,2.5,56,kate
+cash,1.1,9.0,48,tracey
+bond,4.7,3.0,83,tracey
+stock,8.4,7.9,59,sarah
+cash,8.6,6.0,28,kate
+bond,2.3,0.6,17,ben
+cash,4.6,2.2,33,charlie
+bond,7.6,4.2,55,bob
+stock,1.4,3.9,99,charlie

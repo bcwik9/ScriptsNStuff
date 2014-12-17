@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141217045932) do
+ActiveRecord::Schema.define(version: 20141217060933) do
 
   create_table "portfolios", force: true do |t|
     t.string   "owner"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20141217045932) do
     t.integer  "amount"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "portfolio_owner"
   end
 
 end

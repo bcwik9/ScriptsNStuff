@@ -1,0 +1,19 @@
+<h1>Owners</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Portfolio owner</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @securities.select("DISTINCT(portfolio_owner)").each do |owner| %>
+      <tr>
+	<td><%= owner.portfolio_owner %></td>
+      </tr>
+    <% end %>
+  </tbody>
+
+</table>

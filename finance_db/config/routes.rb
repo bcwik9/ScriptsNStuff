@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get 'page/import'
   get 'import', to: 'page#import'
+  get 'owners', to: 'securities#owners'
 
   resources :portfolios
 

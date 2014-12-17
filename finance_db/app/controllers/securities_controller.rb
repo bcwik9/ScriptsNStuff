@@ -7,9 +7,13 @@ class SecuritiesController < ApplicationController
     @securities = Security.all
   end
 
+  def owners
+    @securities = Security.all
+  end
+
   def import
     Security.import(params[:file])
-    redirect_to root_url, notice: "securities imported"
+    redirect_to root_path
   end
 
   # GET /securities/1
