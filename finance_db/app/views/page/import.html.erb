@@ -3,6 +3,16 @@
   </head>
   <body>
     <h1>import CSV data!</h1>
+    <br>
+    <br>
+    <br>
+    Must be in format csv. Example:<br><br>
+    sec_type,price,multiplier,amount,portfolio_owner<br>
+    stock,1.1,2.2,1,charlie<br>
+    bond,2.2,3.3,56,ben<br>
+    <br>
+    <br>
+    <br>    
     <%= form_tag import_securities_path, multipart: true do %>
     <%= file_field_tag :file %>
     <%= submit_tag "Import" %>
