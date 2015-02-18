@@ -21,10 +21,14 @@ export package_list='git-core curl zlib1g-dev build-essential libssl-dev libread
 sudo apt-get install -y $package_list
 
 echo "Installing RVM"
-set +e
-sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-set -e
-sudo -i curl -sSL https://get.rvm.io | bash -s stable
+#set +e
+#sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+#set -e
+#sudo -i curl -sSL https://get.rvm.io | bash -s stable
+sudo curl -sSL https://github.com/wayneeseguin/rvm/tarball/stable -o rvm-stable.tar.gz
+sudo mkdir rvm && cd rvm
+sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
+sudo ./install --auto-dotfiles
 sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
 
 echo "Installing Ruby"
