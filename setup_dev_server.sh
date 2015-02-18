@@ -1,4 +1,5 @@
 #!/bin/bash
+# Run using: sh setup_dev_server.sh
 
 exit_error()
 {
@@ -20,8 +21,9 @@ export package_list='git-core curl zlib1g-dev build-essential libssl-dev libread
 sudo apt-get install -y $package_list
 
 echo "Installing RVM"
-sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-sudo chmod 777 /home/ubuntu/.gnupg/
+set +e
+sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+set -e
 sudo curl -sSL https://get.rvm.io | bash -s stable
 sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
 
