@@ -24,7 +24,7 @@ echo "Installing RVM"
 set +e
 sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 set -e
-sudo curl -sSL https://get.rvm.io | bash -s stable
+sudo -i curl -sSL https://get.rvm.io | bash -s stable
 sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
 
 echo "Installing Ruby"
