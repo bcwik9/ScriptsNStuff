@@ -21,9 +21,9 @@ sudo apt-get install -y $package_list
 
 echo "Installing RVM"
 set +e
-sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-sudo curl -sSL https://get.rvm.io | bash -s stable
+sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 set -e
+sudo curl -sSL https://get.rvm.io | bash -s stable
 sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
 
 echo "Installing Ruby"
