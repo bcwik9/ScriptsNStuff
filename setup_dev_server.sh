@@ -40,4 +40,5 @@ sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
 sudo -i source /usr/local/rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
 
 echo "ALL DONE"
-set +e
+trap - 0 # clear trap so script doesn't fail at the end
+exit 0
