@@ -28,8 +28,9 @@ sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
 sudo ./install --auto-dotfiles
 sudo echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc # add to bash
 # clean up RVM install files
-sudo rm -rf ../rvm/
-sudo rm -f ../rvm-stable.tar.gz
+cd ..
+sudo rm -rf rvm/
+sudo rm -f rvm-stable.tar.gz
 
 echo "Installing Ruby"
 sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
