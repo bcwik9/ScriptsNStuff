@@ -37,5 +37,7 @@ sudo rm -f ../rvm-stable.tar.gz
 
 echo "Installing Ruby"
 sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
-echo "Setting default Ruby version"
 sudo -i source /usr/local/rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
+
+echo "ALL DONE"
+exit 0
