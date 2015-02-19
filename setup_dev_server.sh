@@ -21,6 +21,7 @@ export package_list='git-core curl zlib1g-dev build-essential libssl-dev libread
 sudo apt-get install -y $package_list
 
 echo "Installing RVM"
+# TODO: this is having problems with GPG permission and finding the key
 #set +e
 #sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 #set -e
@@ -29,8 +30,11 @@ sudo curl -sSL https://github.com/wayneeseguin/rvm/tarball/stable -o rvm-stable.
 sudo mkdir rvm && cd rvm
 sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
 sudo ./install --auto-dotfiles
-sudo echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc # add to bash
+sudo echo "source /usr/local/rvm/scripts/rvm" >> ~/.bashrc # add to bash
+# clean up RVM install files
+sudo rm -rf ../rvm/
+sudo rm ../rvm-stable.tar.gz
 
 echo "Installing Ruby"
-sudo -i source ~/.rvm/scripts/rvm && rvm install 2.1.3
-sudo -i source ~/.rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
+sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
+sudo -i source /usr/local/rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
