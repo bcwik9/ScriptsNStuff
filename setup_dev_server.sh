@@ -7,6 +7,7 @@ exit_error()
     exit 1
 }
 
+# call exit_error when there's a problem
 trap 'exit_error' 0
 
 set -e # fail on error
@@ -21,11 +22,6 @@ export package_list='git-core curl zlib1g-dev build-essential libssl-dev libread
 sudo apt-get install -y $package_list
 
 echo "Installing RVM"
-# TODO: this is having problems with GPG permission and finding the key
-#set +e
-#sudo gpg --homedir /root/.gnupg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-#set -e
-#sudo -i curl -sSL https://get.rvm.io | bash -s stable
 sudo curl -sSL https://github.com/wayneeseguin/rvm/tarball/stable -o rvm-stable.tar.gz
 sudo mkdir rvm && cd rvm
 sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
@@ -38,6 +34,9 @@ sudo rm -f ../rvm-stable.tar.gz
 echo "Installing Ruby"
 sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
 sudo -i source /usr/local/rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
+
+echo "Installing Rails"
+sudo gem install rails
 
 echo "ALL DONE. Remember to log out and back in again..."
 trap - 0 # clear trap so script doesn't fail at the end
