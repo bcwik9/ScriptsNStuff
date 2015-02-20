@@ -34,8 +34,8 @@ sudo rm -rf ../rvm/
 sudo rm -f ../rvm-stable.tar.gz
 
 echo "Installing Ruby"
-sudo -i rvm install 2.1.3
-sudo -i rvm use 2.1.3 --default # set default ruby
+sudo rvm install 2.1.3
+sudo use 2.1.3 --default # set default ruby
 
 echo "*** ALL DONE ***"
 trap - 0 # clear trap so script doesn't fail at the end
