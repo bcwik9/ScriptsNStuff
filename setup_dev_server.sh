@@ -27,15 +27,14 @@ sudo mkdir rvm && cd rvm
 sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
 sudo ./install --auto-dotfiles
 export rmv_cmd="source /usr/local/rvm/scripts/rvm"
-$rvm_cmd
 sudo echo $rvm_cmd >> ~/.bashrc # add to bash
 # clean up RVM install files
 sudo rm -rf ../rvm/
 sudo rm -f ../rvm-stable.tar.gz
 
 echo "Installing Ruby"
-sudo rvm install 2.1.3
-sudo use 2.1.3 --default # set default ruby
+sudo -i $rvm_cmd && rvm install 2.1.3
+sudo -i $rvm_cmd && use 2.1.3 --default # set default ruby
 
 echo "*** ALL DONE ***"
 trap - 0 # clear trap so script doesn't fail at the end
