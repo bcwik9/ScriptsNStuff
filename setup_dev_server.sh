@@ -25,7 +25,7 @@ echo "Installing RVM"
 sudo curl -sSL https://github.com/wayneeseguin/rvm/tarball/stable -o rvm-stable.tar.gz
 sudo mkdir rvm
 sudo tar --strip-components=1 --directory="rvm" -xzf rvm-stable.tar.gz
-sudo rvm/install --auto-dotfiles
+sudo ./rvm/install --auto-dotfiles
 export rmv_cmd="source /usr/local/rvm/scripts/rvm"
 $rvm_cmd
 sudo echo $rvm_cmd >> ~/.bashrc # add to bash
@@ -34,8 +34,8 @@ sudo rm -rf rvm/
 sudo rm -f rvm-stable.tar.gz
 
 echo "Installing Ruby"
-sudo -i source /usr/local/rvm/scripts/rvm && rvm install 2.1.3
-sudo -i source /usr/local/rvm/scripts/rvm && rvm use 2.1.3 --default # set default ruby
+sudo -i rvm install 2.1.3
+sudo -i rvm use 2.1.3 --default # set default ruby
 
 echo "ALL DONE. Remember to log out and back in again..."
 trap - 0 # clear trap so script doesn't fail at the end
