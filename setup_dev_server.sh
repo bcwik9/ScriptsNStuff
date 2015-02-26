@@ -1,6 +1,7 @@
 #!/bin/bash
 # Designed for t2.micro AWS Ubuntu EC2 instance
 # Run using: sh setup_dev_server.sh
+# or wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh
 
 exit_error()
 {
