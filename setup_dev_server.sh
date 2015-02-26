@@ -32,7 +32,7 @@ sudo dd if=/dev/zero of=/swap bs=1M count=1024
 sudo mkswap /swap
 sudo swapon /swap
 # Now install
-~/.rvm/bin/rvmsudo ~/.rvm/gems/ruby-2.1.5/bin/passenger-install-nginx-module --auto-download --auto
+bash --login ~/.rvm/bin/rvmsudo ~/.rvm/gems/ruby-2.1.5/bin/passenger-install-nginx-module --auto-download --auto
 
 echo "*** ALL DONE ***"
 trap - 0 # clear trap so script doesn't fail at the end
