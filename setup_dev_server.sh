@@ -1,4 +1,5 @@
 #!/bin/bash
+# Designed for t2.micro AWS Ubuntu EC2 instance
 # Run using: sh setup_dev_server.sh
 
 exit_error()
@@ -13,28 +14,24 @@ trap 'exit_error' 0
 set -e # fail on error
 
 
-echo "Updating and Upgrading"
+echo "*** Updating and Upgrading ***"
 sudo apt-get update
 sudo apt-get upgrade -y
 
-echo "Installing packages"
-export package_list='git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties bundler emacs libgdbm-dev libncurses5-dev automake libtool bison libffi-dev'
+echo "*** Installing packages ***"
+export package_list='curl libcurl4-openssl-dev emacs'
 sudo apt-get install -y $package_list
 
-echo "Installing RVM"
-sudo curl -sSL https://github.com/wayneeseguin/rvm/tarball/stable -o rvm-stable.tar.gz
-sudo mkdir rvm && cd rvm
-sudo tar --strip-components=1 -xzf ../rvm-stable.tar.gz
-sudo ./install --auto-dotfiles
-export rmv_cmd="source /usr/local/rvm/scripts/rvm"
-sudo echo $rvm_cmd >> ~/.bashrc # add to bash
-# clean up RVM install files
-sudo rm -rf ../rvm/
-sudo rm -f ../rvm-stable.tar.gz
+echo "Running RVM/Ruby/Rails install script"
+wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/railsready/master/railsready.sh && bash railsready.sh
 
-echo "Installing Ruby"
-sudo -i $rvm_cmd && rvm install 2.1.3
-sudo -i $rvm_cmd && use 2.1.3 --default # set default ruby
+echo "Installing nginx"
+# First do swap
+sudo dd if=/dev/zero of=/swap bs=1M count=1024
+sudo mkswap /swap
+sudo swapon /swap
+# Now install
+sudo -i passenger-install-nginx-module --auto-download --auto
 
 echo "*** ALL DONE ***"
 trap - 0 # clear trap so script doesn't fail at the end
