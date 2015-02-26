@@ -26,13 +26,19 @@ sudo apt-get install -y $package_list
 echo "Running RVM/Ruby/Rails install script"
 wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/railsready/master/railsready.sh && bash railsready.sh
 
+# Reload bash so we have passenger
+echo "Reloading shell so passenger is available"
+if [ -f ~/.bashrc ] ; then
+  source ~/.bashrc
+fi
+
 echo "Installing nginx"
 # First do swap
 sudo dd if=/dev/zero of=/swap bs=1M count=1024
 sudo mkswap /swap
 sudo swapon /swap
 # Now install
-sudo -i passenger-install-nginx-module --auto-download --auto
+sudo passenger-install-nginx-module --auto-download --auto
 
 echo "*** ALL DONE ***"
 trap - 0 # clear trap so script doesn't fail at the end
