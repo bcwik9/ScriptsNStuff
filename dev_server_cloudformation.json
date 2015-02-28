@@ -14,7 +14,8 @@
 			"Fn::Join" : ["",[
 			    "#!/bin/bash -v\n",
 			    "export HOME=`pwd`" ,"\n",
-			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n"
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
+			    "/opt/aws/bin/cfn-signal -e 0 --stack ", { "Ref": "AWS::StackName" }, " --resource testec2\n"
 			]]
 		    }
 		},
@@ -41,6 +42,11 @@
 		    }
 
 		]
+	    },
+	    "CreationPolicy": {
+		"ResourceSignal": {
+		    "Timeout": "PT10M"
+		}
 	    }
 	},
 
