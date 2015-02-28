@@ -20,13 +20,8 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 echo "*** Installing packages ***"
-export package_list='curl libcurl4-openssl-dev emacs heat-cfntools python-argparse cloud-init python-psutil python-pip awscli'
+export package_list='curl libcurl4-openssl-dev emacs awscli'
 sudo apt-get install -y $package_list
-
-# set up cfn so we can signal to AWS when we're finished
-sudo apt-get -y remove python-boto
-sudo pip install 'boto==2.5.2' heat-cfntools
-sudo cfn-create-aws-symlinks -s /usr/local/bin/
 
 echo "*** Running RVM/Ruby/Rails install script ***"
 wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/railsready/master/railsready.sh && bash railsready.sh
