@@ -14,7 +14,12 @@
 			"Fn::Join" : ["",[
 			    "#!/bin/bash -v\n",
 			    "export HOME=`pwd`" ,"\n",
-			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n"
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
+			    "curl -X PUT -H 'Content-Type:' --data-binary '{\"Status\" : \"SUCCESS\",",
+                            "\"Reason\" : \"Server is ready\",",
+                            "\"UniqueId\" : \"testec2\",",
+                            "\"Data\" : \"Done\"}' ",
+			    "\"", {"Ref" : "WaitForInstanceWaitHandle"},"\"\n"
 			]]
 		    }
 		},
