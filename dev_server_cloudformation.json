@@ -11,12 +11,12 @@
 		"ImageId" : "ami-9a562df2",
 		"UserData" : { "Fn::Base64" : { "Fn::Join" : ["",[
 		    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
-		    
-		    "curl -X PUT -H 'Content-Type:' --data-binary '{\"Status\" : \"SUCCESS\",",
-                    "\"Reason\" : \"The application myapp is ready\",",
-                    "\"UniqueId\" : \"myapp\",",
-                    "\"Data\" : \"Done\"}' ",
-		    "\"", {"Ref" : "WaitForInstanceWaitHandle"},"\"\n" ]]}},
+		    "# Signal the status from cfn-init\n",
+		    "/opt/aws/bin/cfn-signal -e $? ",
+		    "         --stack ", { "Ref" : "AWS::StackName" },
+		    "         --resource testec2 ",
+		    "         --region ", { "Ref" : "AWS::Region" }, "\n"
+		]]}},
 		"Tags": [
 		    {
 			"Key": "Name",
@@ -40,6 +40,11 @@
 		    }
 
 		]
+	    }
+	    "CreationPolicy" : {
+		"ResourceSignal" : {
+		    "Timeout" : "PT10M"
+		}
 	    }
 	},
 
@@ -93,21 +98,8 @@
 		]
 	    }
 	},
-	    "WaitForInstanceWaitHandle" : {
-		"Type" : "AWS::CloudFormation::WaitConditionHandle",
-		"Properties" : {
-		}
-	    },
-	"WaitForInstance" : {
-	    "Type" : "AWS::CloudFormation::WaitCondition",
-	    "DependsOn" : "testec2",
-	    "Properties" : {
-		"Handle" : {"Ref" : "WaitForInstanceWaitHandle"},
-		"Timeout" : "700"
-	    }
-	}
     },
-
+    
     "Outputs" : {
 	"IP" : {
 	    "Description" : "The IP for the newly created server",
