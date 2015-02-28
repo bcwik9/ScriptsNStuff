@@ -41,18 +41,6 @@
 		    }
 
 		]
-	    },
-	    "WaitForInstanceWaitHandle" : {
-		"Type" : "AWS::CloudFormation::WaitConditionHandle",
-		"Properties" : { }
-	    },
-	    "WaitForInstance" : {
-		"Type" : "AWS::CloudFormation::WaitCondition",
-		"DependsOn" : "testec2",
-		"Properties" : {
-		    "Handle" : {"Ref" : "WaitForInstanceWaitHandle"},
-		    "Timeout" : "600"
-		}
 	    }
 	},
 
@@ -105,9 +93,23 @@
 
 		]
 	    }
+	},
+	
+	"WaitForInstanceWaitHandle" : {
+	    "Type" : "AWS::CloudFormation::WaitConditionHandle",
+	    "Properties" : { }
+	},
+	
+	"WaitForInstance" : {
+	    "Type" : "AWS::CloudFormation::WaitCondition",
+	    "DependsOn" : "testec2",
+	    "Properties" : {
+		"Handle" : {"Ref" : "WaitForInstanceWaitHandle"},
+		"Timeout" : "600"
+	    }
 	}
     },
-
+    
     "Outputs" : {
 	"IP" : {
 	    "Description" : "The IP for the newly created server",
