@@ -1,6 +1,5 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
-
     "Resources" : {
 	"testec2" : {
 	    "Type" : "AWS::EC2::Instance",
@@ -38,7 +37,7 @@
 			"Key": "deployer",
 			"Value": "ubuntu"
 		    }
-
+		    
 		]
 	    }
 	    "CreationPolicy" : {
@@ -47,7 +46,6 @@
 		}
 	    }
 	},
-
 	"testsg" : {
 	    "Type" : "AWS::EC2::SecurityGroup",
 	    "Properties" : {
@@ -94,20 +92,18 @@
 			"Key": "deployer",
 			"Value": "ubuntu"
 		    }
-
 		]
 	    }
 	},
     },
-    
     "Outputs" : {
 	"IP" : {
 	    "Description" : "The IP for the newly created server",
 	    "Value" : { "Fn::GetAtt" : [ "testec2", "PublicIp" ] } 
 	},
-	    "WebsiteURL" : {
-		"Description" : "The URL for the newly created Rails application",
-		"Value" : { "Fn::Join" : ["", [ "http://", { "Fn::GetAtt" : [ "testec2", "PublicIp" ] } ]]}
-	    }
+	"WebsiteURL" : {
+	    "Description" : "The URL for the newly created Rails application",
+	    "Value" : { "Fn::Join" : ["", [ "http://", { "Fn::GetAtt" : [ "testec2", "PublicIp" ] } ]]}
+	}
     }
 }
