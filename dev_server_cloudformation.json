@@ -4,6 +4,11 @@
     "Resources" : {
 	"testec2" : {
 	    "Type" : "AWS::EC2::Instance",
+	    "CreationPolicy": {
+		"ResourceSignal": {
+		    "Timeout": "PT10M"
+		}
+	    },
 	    "Properties" : {
 		"KeyName" : "laptop",
 		"InstanceType": "t2.micro",
@@ -40,11 +45,6 @@
 		    }
 
 		]
-	    },
-	    "CreationPolicy": {
-		"ResourceSignal": {
-		    "Timeout": "PT10M"
-		}
 	    }
 	},
 
