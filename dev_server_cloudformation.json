@@ -12,18 +12,7 @@
 		"UserData" : {
 		    "Fn::Base64" : {
 			"Fn::Join" : ["",[
-			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
-			    "# fake install so cfn signal works?\n",
-			    "/opt/aws/bin/cfn-init ",
-			    "         --stack ", { "Ref" : "AWS::StackName" },
-			    "         --resource testec2 ",
-			    "         --configsets InstallAndRun ",
-			    "         --region ", { "Ref" : "AWS::Region" }, "\n",
-			    "# Signal we've completed setup\n",
-			    "/opt/aws/bin/cfn-signal -e 0 ",
-			    "         --stack ", { "Ref" : "AWS::StackName" },
-			    "         --resource testec2 ",
-			    "         --region ", { "Ref" : "AWS::Region" }, "\n"
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n"
 			]]
 		    }
 		},
@@ -50,11 +39,6 @@
 		    }
 
 		]
-	    },
-	    "CreationPolicy": {
-		"ResourceSignal": {
-		    "Timeout": "PT10M"
-		}
 	    }
 	},
 
