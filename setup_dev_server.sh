@@ -28,10 +28,10 @@ sudo apt-get -y remove python-boto
 sudo pip install 'boto==2.5.2' heat-cfntools
 sudo cfn-create-aws-symlinks -s /usr/local/bin/
 
-echo "Running RVM/Ruby/Rails install script"
+echo "*** Running RVM/Ruby/Rails install script ***"
 wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/railsready/master/railsready.sh && bash railsready.sh
 
-echo "Installing nginx"
+echo "*** Installing nginx ***"
 # First do swap
 sudo dd if=/dev/zero of=/swap bs=1M count=1024
 sudo mkswap /swap
