@@ -17,6 +17,11 @@
 			]]
 		    }
 		},
+		"CreationPolicy": {
+		    "ResourceSignal": {
+			"Timeout": "PT10M"
+		    }
+		},
 		"Tags": [
 		    {
 			"Key": "Name",
@@ -91,11 +96,6 @@
 		    }
 
 		]
-	    }
-	},
-	"CreationPolicy": {
-	    "ResourceSignal": {
-		"Timeout": "PT10M"
 	    }
 	}
     },
