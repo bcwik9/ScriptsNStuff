@@ -12,7 +12,7 @@
 			"Type": "A",
 			"TTL": "60",
 			"ResourceRecords": [
-			    "IP_OF_YOUR_SERVER"
+			    "52.0.217.133"
 			]
 		    },
 		    {
