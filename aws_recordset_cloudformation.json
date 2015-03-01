@@ -16,7 +16,31 @@
 			]
 		    },
 		    {
+			"Name": "www.bencwik.com.",
+			"Type": "A",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "52.0.217.133"
+			]
+		    },
+		    {
 			"Name": "questionnaire.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "www.questionnaire.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "www.alientrolls.bencwik.com.",
 			"Type": "CNAME",
 			"TTL": "60",
 			"ResourceRecords": [
