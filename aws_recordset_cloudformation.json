@@ -1,0 +1,38 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+	"subdomains": {
+	    "Type": "AWS::Route53::RecordSetGroup",
+	    "Properties": {
+		"HostedZoneName": "bencwik.com.",  
+		"Comment": "bencwik.com production server.",
+		"RecordSets": [
+		    {
+			"Name": "bencwik.com.",
+			"Type": "A",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "IP_OF_YOUR_SERVER"
+			]
+		    },
+		    {
+			"Name": "questionnaire.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "alientrolls.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    }
+		]
+	    }
+	}
+    }
+}
