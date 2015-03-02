@@ -120,22 +120,20 @@
 		"Comment": "bencwik.com production server.",
 		"RecordSets": [
 		    {
-			{
-			    "Name": "dev.bencwik.com.",
-			    "Type": "CNAME",
-			    "TTL": "60",
-			    "ResourceRecords": [
-				{ "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
-			    ]
-			},
-			{
-			    "Name": "www.dev.bencwik.com.",
-			    "Type": "CNAME",
-			    "TTL": "60",
-			    "ResourceRecords": [
-				{ "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
-			    ]
-			}
+			"Name": "dev.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    { "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
+			]
+		    },
+		    {
+			"Name": "www.dev.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    { "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
+			]
 		    }
 		}
 	    }
