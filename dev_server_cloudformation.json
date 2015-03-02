@@ -135,7 +135,7 @@
 			    { "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
 			]
 		    }
-		}
+		]
 	    }
 	}
     },
