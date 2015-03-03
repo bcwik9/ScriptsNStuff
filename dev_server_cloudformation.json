@@ -124,7 +124,7 @@
 			"Type": "CNAME",
 			"TTL": "60",
 			"ResourceRecords": [
-			    { "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
+			    { "Fn::GetAtt" : [ "bendevec2", "PublicDnsName" ] }
 			]
 		    },
 		    {
@@ -132,7 +132,7 @@
 			"Type": "CNAME",
 			"TTL": "60",
 			"ResourceRecords": [
-			    { "Fn::GetAtt" : [ "bendevec2", "PublicIp" ] }
+			    { "Fn::GetAtt" : [ "bendevec2", "PublicDnsName" ] }
 			]
 		    }
 		]
