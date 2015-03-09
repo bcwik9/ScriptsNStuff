@@ -17,7 +17,8 @@ set -e # fail on error
 
 echo "*** Updating and Upgrading ***"
 sudo apt-get update
-sudo apt-get upgrade -y
+# prevent any interactive menus from popping up and requiring user input
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
 echo "*** Installing packages ***"
 export package_list='curl libcurl4-openssl-dev emacs awscli'
