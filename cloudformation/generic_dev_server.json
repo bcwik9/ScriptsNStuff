@@ -134,7 +134,7 @@
 	},
 	"WebsiteURL" : {
 	    "Description" : "The URL for the newly created Rails application",
-	    "Value" : { "Fn::GetAtt" : [ "devec2", "PublicDnsName" ] }
+	    "Value" : { "Fn::Join" : ["", [ "http://", { "Fn::GetAtt" : [ "bendevec2", "PublicDnsName" ] } ]]}
 	}
     }
 }
