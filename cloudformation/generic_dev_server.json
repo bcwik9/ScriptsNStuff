@@ -6,6 +6,10 @@
 	    "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instance",
 	    "Type" : "AWS::EC2::KeyPair::KeyName",
 	    "ConstraintDescription" : "Must be the name of an existing EC2 KeyPair"
+	},
+	"PackagesToInstall" : {
+	    "Description" : "Packages to install via 'apt-get install'",
+	    "Type" : "String"
 	}
     },
 
@@ -22,7 +26,7 @@
 			"Fn::Join" : ["",[
 			    "#!/bin/bash -v\n",
 			    "export HOME=`pwd`" ,"\n",
-			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", {"Ref" : "PackagesToInstall"}, "\n",
 			    "curl -X PUT -H 'Content-Type:' --data-binary '{\"Status\" : \"SUCCESS\",",
                             "\"Reason\" : \"Server is ready\",",
                             "\"UniqueId\" : \"devec2\",",

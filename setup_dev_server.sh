@@ -2,6 +2,7 @@
 # Designed for t2.micro AWS Ubuntu EC2 instance
 # Run using: sh setup_dev_server.sh
 # or sudo -i wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && sudo -i bash setup_dev_server.sh
+# You can pass in params that will be installed via 'apt-get install'
 
 exit_error()
 {
@@ -21,8 +22,8 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
 echo "*** Installing packages ***"
-export package_list='curl libcurl4-openssl-dev emacs awscli'
-sudo apt-get install -y $package_list
+export package_list='curl libcurl4-openssl-dev'
+sudo apt-get install -y $package_list $@
 
 echo "*** Running RVM/Ruby/Rails install script ***"
 wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/railsready/master/railsready.sh && bash railsready.sh
