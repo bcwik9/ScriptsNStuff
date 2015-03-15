@@ -7,7 +7,7 @@
 	    "Type" : "AWS::EC2::KeyPair::KeyName",
 	    "ConstraintDescription" : "Must be the name of an existing EC2 KeyPair"
 	}
-    }
+    },
 
     "Resources" : {
 	"devec2" : {
