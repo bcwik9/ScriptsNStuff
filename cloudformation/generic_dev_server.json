@@ -1,11 +1,19 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
 
+    "Parameters" : {
+	"KeyName" : {
+	    "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instance",
+	    "Type" : "AWS::EC2::KeyPair::KeyName",
+	    "ConstraintDescription" : "Must be the name of an existing EC2 KeyPair"
+	}
+    }
+
     "Resources" : {
 	"devec2" : {
 	    "Type" : "AWS::EC2::Instance",
 	    "Properties" : {
-		"KeyName" : "laptop",
+		"KeyName" : {"Ref" : "KeyName"},
 		"InstanceType": "t2.micro",
 		"SecurityGroups" : [ { "Ref" : "devsg" } ],
 		"ImageId" : "ami-9a562df2",
