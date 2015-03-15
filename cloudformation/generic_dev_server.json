@@ -1,0 +1,128 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+
+    "Resources" : {
+	"devec2" : {
+	    "Type" : "AWS::EC2::Instance",
+	    "Properties" : {
+		"KeyName" : "laptop",
+		"InstanceType": "t2.micro",
+		"SecurityGroups" : [ { "Ref" : "devsg" } ],
+		"ImageId" : "ami-9a562df2",
+		"UserData" : {
+		    "Fn::Base64" : {
+			"Fn::Join" : ["",[
+			    "#!/bin/bash -v\n",
+			    "export HOME=`pwd`" ,"\n",
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh", "\n",
+			    "curl -X PUT -H 'Content-Type:' --data-binary '{\"Status\" : \"SUCCESS\",",
+                            "\"Reason\" : \"Server is ready\",",
+                            "\"UniqueId\" : \"devec2\",",
+                            "\"Data\" : \"Done\"}' ",
+			    "\"", {"Ref" : "WaitForInstanceWaitHandle"},"\"\n"
+			]]
+		    }
+		},
+		"Tags": [
+		    {
+			"Key": "Name",
+			"Value": "dev"
+		    },
+		    {
+			"Key": "branch_name",
+			"Value": "master"
+		    },
+		    {
+			"Key": "environment",
+			"Value": "development"
+		    },
+		    {
+			"Key": "db_type",
+			"Value": "sqlite"
+		    },
+		    {
+			"Key": "deployer",
+			"Value": "ubuntu"
+		    }
+
+		]
+	    }
+	},
+
+	"devsg" : {
+	    "Type" : "AWS::EC2::SecurityGroup",
+	    "Properties" : {
+		"GroupDescription" : "Enable Access to Rails application via port 80, 443, 3000 and SSH access via port 22",
+		"SecurityGroupIngress" : [ {
+		    "IpProtocol" : "tcp",
+		    "FromPort" : "22",
+		    "ToPort" : "22",
+		    "CidrIp" : "0.0.0.0/0"
+		}, {
+		    "IpProtocol" : "tcp",
+		    "FromPort" : "3000",
+		    "ToPort" : "3000",
+		    "CidrIp" : "0.0.0.0/0"
+		}, {
+		    "IpProtocol" : "tcp",
+		    "FromPort" : "80",
+		    "ToPort" : "80",
+		    "CidrIp" : "0.0.0.0/0"
+		} , {
+		    "IpProtocol" : "tcp",
+		    "FromPort" : "443",
+		    "ToPort" : "443",
+		    "CidrIp" : "0.0.0.0/0"
+		}],
+		"Tags": [
+		    {
+			"Key": "Name",
+			"Value": "dev"
+		    },
+		    {
+			"Key": "branch_name",
+			"Value": "master"
+		    },
+		    {
+			"Key": "environment",
+			"Value": "development"
+		    },
+		    {
+			"Key": "db_type",
+			"Value": "sqlite"
+		    },
+		    {
+			"Key": "deployer",
+			"Value": "ubuntu"
+		    }
+
+		]
+	    }
+	},
+	
+	"WaitForInstanceWaitHandle" : {
+	    "Type" : "AWS::CloudFormation::WaitConditionHandle",
+	    "Properties" : { }
+	},
+	
+	"WaitForInstance" : {
+	    "Type" : "AWS::CloudFormation::WaitCondition",
+	    "DependsOn" : "devec2",
+	    "Properties" : {
+		"Handle" : {"Ref" : "WaitForInstanceWaitHandle"},
+		"Timeout" : "600"
+	    }
+	}
+    },
+    
+    "Outputs" : {
+	"IP" : {
+	    "Description" : "The IP for the newly created server",
+	    "Value" : { "Fn::GetAtt" : [ "devec2", "PublicIp" ] } 
+	},
+	"WebsiteURL" : {
+	    "Description" : "The URL for the newly created Rails application",
+	    "Value" : { "Fn::Join" : ["", [ "http://", { "Fn::GetAtt" : [ "devec2", "PublicIp" ] } ]]}
+	}
+    }
+}
