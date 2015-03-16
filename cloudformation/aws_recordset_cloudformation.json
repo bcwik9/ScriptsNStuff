@@ -54,6 +54,22 @@
 			"ResourceRecords": [
 			    "bencwik.com"
 			]
+		    },
+		    {
+			"Name": "railscloudform.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "www.railscloudform.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
 		    }
 		]
 	    }
