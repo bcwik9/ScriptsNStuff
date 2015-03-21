@@ -70,6 +70,22 @@
 			"ResourceRecords": [
 			    "bencwik.com"
 			]
+		    },
+		    {
+			"Name": "athleteinfo.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "www.athleteinfo.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
 		    }
 		]
 	    }
