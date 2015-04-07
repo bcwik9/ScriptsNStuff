@@ -56,15 +56,26 @@ def num_to_english i
   max = (10**((BIG.size+1) * 3)) - 1
   raise 'Number too large' if max < i.to_i
 
+  # keep track of where we are in the number
   power_counter = 0
+  # convert number string to an array
   num_arr = i.split ''
+  
+  # keep pulling off sets of 3 digits and process them until
+  # there are no more
   while !num_arr.empty?
+    # pull off 3 digits
     current_num = num_arr.pop(3).join ''
+    # get english representation of the 3 digits
     current_english = get_hundred_representation current_num
+    # figure out postfix if we have a number greater than 999
     postfix = (power_counter == 0) ? '' : BIG[power_counter-1]
     power_counter += 1
+    # skip if the section was 0
     next if current_english.empty?
+    # add postfix if necessary
     current_english += " #{postfix}" unless postfix.empty?
+    # add to our return value
     ret = current_english + ' ' + ret
   end
   
@@ -74,22 +85,31 @@ end
 # takes a string representation of a number up to 999
 # returns the english counterpart of the parameter
 def get_hundred_representation num
+  # input should have 3 digits or less
   raise 'Invalid number specified' unless num.size <= 3
+
+  # what we'll return
   ret = ''
 
   # hundred position
   if num.size == 3
-    hundred = num[0].to_i
+    hundred = num[0].to_i # get the digit
     ret = "#{SINGLE[hundred]} hundred" if hundred != 0
   end
 
   # rightmost two digits are special
+  # they include the uniquely named single digits and teens
   two_digits = num.to_i % 100
   return ret if two_digits == 0
+  # add a space if there was a third digit
   ret += ' ' unless ret.empty?
-  if two_digits < DOUBLE.keys.min
+  # look up appropriate english version of the two digits
+  # nineteen is the last uniquely named number
+  if two_digits <= 19
+    # no need to combine numbers
     ret += SINGLE[two_digits]
   else
+    # combine two numbers
     single_digit = two_digits % 10
     ret += DOUBLE[two_digits-single_digit]
     ret += " " + SINGLE[single_digit] unless single_digit == 0
@@ -99,5 +119,4 @@ def get_hundred_representation num
 end
 
 # *** MAIN ***
-num = ARGV.first
-puts num_to_english num
+puts num_to_english ARGV.first
