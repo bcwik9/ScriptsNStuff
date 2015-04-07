@@ -73,7 +73,7 @@ class NumConverter
     # they include the uniquely named single digits and teens
     two_digits = num.to_i % 100
     return ret if two_digits == 0
-    # add a space if there was a third digit
+    # add an 'and' if there was a third digit
     ret += ' and ' unless ret.empty?
     # look up appropriate english version of the two digits
     # nineteen is the last uniquely named number
