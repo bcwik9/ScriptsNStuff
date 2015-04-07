@@ -16,8 +16,8 @@ class NumConverter
   # given an integer, returns the english representation
   def self.num_to_english i
     # some simple sanity checks
-    ret = ''
-    return ret if i.nil? # return empty string if were given nothing
+    return_value = ''
+    return return_value if i.nil? # return empty string if were given nothing
     return 'zero' if i.to_i == 0
 
     # handle negative numbers
@@ -47,11 +47,11 @@ class NumConverter
       # add postfix if necessary
       current_english += " #{postfix}" unless postfix.empty?
       # add to our return value
-      ret = current_english + ' ' + ret
+      return_value = current_english + ' ' + return_value
     end
 
     # return and add negative if necessary
-    return negative + ret
+    return negative + return_value
   end
 
   # takes a string representation of a number up to 999
@@ -61,33 +61,33 @@ class NumConverter
     raise 'Invalid number specified' unless num.size <= 3
 
     # what we'll return
-    ret = ''
+    return_value = ''
 
     # hundred position
     if num.size == 3
       hundred = num[0].to_i # get the digit
-      ret = "#{DOUBLE_DIGITS[hundred]} hundred" if hundred != 0
+      return_value = "#{DOUBLE_DIGITS[hundred]} hundred" if hundred != 0
     end
 
     # rightmost two digits are special
     # they include the uniquely named single digits and teens
     two_digits = num.to_i % 100
-    return ret if two_digits == 0
+    return return_value if two_digits == 0
     # add an 'and' if there was a third digit
-    ret += ' and ' unless ret.empty?
+    return_value += ' and ' unless return_value.empty?
     # look up appropriate english version of the two digits
     # nineteen is the last uniquely named number
     if two_digits <= 19
       # no need to combine numbers
-      ret += DOUBLE_DIGITS[two_digits]
+      return_value += DOUBLE_DIGITS[two_digits]
     else
       # combine two numbers
       single_digit = two_digits % 10
-      ret += DOUBLE_DIGITS[two_digits-single_digit]
-      ret += " " + DOUBLE_DIGITS[single_digit] unless single_digit == 0
+      return_value += DOUBLE_DIGITS[two_digits-single_digit]
+      return_value += " " + DOUBLE_DIGITS[single_digit] unless single_digit == 0
     end
 
-    return ret
+    return return_value
   end
   
   # hash of numbers required to make any number between 1 and 999
