@@ -1,4 +1,12 @@
-SINGLE = {
+###
+# Ben Cwik
+# 2015
+# Description: Simple script which takes a single integer parameter and returns the english representation of it
+# Usage: ruby <scriptname> <number>
+###
+
+# hash of numbers required to make any number between 1 and 999
+DOUBLE_DIGITS = {
   1 => 'one',
   2 => 'two',
   3 => 'three',
@@ -17,10 +25,7 @@ SINGLE = {
   16 => 'sixteen',
   17 => 'seventeen',
   18 => 'eighteen',
-  19 => 'ninteen'
-}
-
-DOUBLE = {
+  19 => 'ninteen',
   20 => 'twenty',
   30 => 'thirty',
   40 => 'fourty',
@@ -31,7 +36,8 @@ DOUBLE = {
   90 => 'ninety'
 }
 
-BIG = [
+# list of important power of 10 names
+POWER_OF_TEN = [
   'thousand',
   'million',
   'billion',
@@ -53,7 +59,7 @@ def num_to_english i
   return 'zero' if i.to_i == 0
 
   # check to make sure we can support the english version
-  max = (10**((BIG.size+1) * 3)) - 1
+  max = (10**((POWER_OF_TEN.size+1) * 3)) - 1
   raise 'Number too large' if max < i.to_i
 
   # keep track of where we are in the number
@@ -69,7 +75,7 @@ def num_to_english i
     # get english representation of the 3 digits
     current_english = get_hundred_representation current_num
     # figure out postfix if we have a number greater than 999
-    postfix = (power_counter == 0) ? '' : BIG[power_counter-1]
+    postfix = (power_counter == 0) ? '' : POWER_OF_TEN[power_counter-1]
     power_counter += 1
     # skip if the section was 0
     next if current_english.empty?
@@ -94,7 +100,7 @@ def get_hundred_representation num
   # hundred position
   if num.size == 3
     hundred = num[0].to_i # get the digit
-    ret = "#{SINGLE[hundred]} hundred" if hundred != 0
+    ret = "#{DOUBLE_DIGITS[hundred]} hundred" if hundred != 0
   end
 
   # rightmost two digits are special
@@ -107,12 +113,12 @@ def get_hundred_representation num
   # nineteen is the last uniquely named number
   if two_digits <= 19
     # no need to combine numbers
-    ret += SINGLE[two_digits]
+    ret += DOUBLE_DIGITS[two_digits]
   else
     # combine two numbers
     single_digit = two_digits % 10
-    ret += DOUBLE[two_digits-single_digit]
-    ret += " " + SINGLE[single_digit] unless single_digit == 0
+    ret += DOUBLE_DIGITS[two_digits-single_digit]
+    ret += " " + DOUBLE_DIGITS[single_digit] unless single_digit == 0
   end
 
   return ret
