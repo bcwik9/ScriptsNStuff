@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20150407165427) do
     t.string   "last_name"
     t.integer  "age"
     t.string   "github_account"
-    t.date     "date_of_third_grade_graduation"
+    t.string   "date_of_third_grade_graduation"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end

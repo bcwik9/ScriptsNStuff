@@ -21,8 +21,6 @@ namespace :data do
     CSV.foreach(csv_file, headers: [:id, :first_name, :last_name, :age, :github_account, :date_of_third_grade_graduation]) do |row|
       person_params = row.to_h
       next unless is_integer? person_params[:id] # skip header
-      date = person_params[:date_of_third_grade_graduation]
-      person_params[:date_of_third_grade_graduation] = Date.new(date, '%m/%d/%y')
       puts "Creating person: #{person_params}"
       Person.create! person_params # create and save person
     end

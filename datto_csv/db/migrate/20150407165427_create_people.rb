@@ -5,7 +5,7 @@ class CreatePeople < ActiveRecord::Migration
       t.string :last_name
       t.integer :age
       t.string :github_account
-      t.date :date_of_third_grade_graduation
+      t.string :date_of_third_grade_graduation
 
       t.timestamps null: false
     end
