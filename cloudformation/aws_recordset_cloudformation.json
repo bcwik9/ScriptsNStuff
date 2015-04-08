@@ -86,6 +86,22 @@
 			"ResourceRecords": [
 			    "bencwik.com"
 			]
+		    },
+		    {
+			"Name": "jamaica2015.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
+		    },
+		    {
+			"Name": "www.jamaica2015.bencwik.com.",
+			"Type": "CNAME",
+			"TTL": "60",
+			"ResourceRecords": [
+			    "bencwik.com"
+			]
 		    }
 		]
 	    }
