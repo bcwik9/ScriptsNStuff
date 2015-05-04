@@ -19,13 +19,13 @@
 		"KeyName" : {"Ref" : "KeyName"},
 		"InstanceType": "t2.micro",
 		"SecurityGroups" : [ { "Ref" : "devsg" } ],
-		"ImageId" : "ami-26b9834e",
+		"ImageId" : "ami-d05e75b8",
 		"UserData" : {
 		    "Fn::Base64" : {
 			"Fn::Join" : ["",[
 			    "#!/bin/bash -v\n",
 			    "export HOME=`pwd`" ,"\n",
-			    "sudo apt-get install -y emacs ", {"Ref" : "PackagesToInstall"}, "\n",
+			    "wget --no-check-certificate https://raw.githubusercontent.com/bcwik9/ScriptsNStuff/master/setup_dev_server.sh && bash setup_dev_server.sh ", {"Ref" : "PackagesToInstall"}, "\n",
 			    "curl -X PUT -H 'Content-Type:' --data-binary '{\"Status\" : \"SUCCESS\",",
                             "\"Reason\" : \"Server is ready\",",
                             "\"UniqueId\" : \"devec2\",",
