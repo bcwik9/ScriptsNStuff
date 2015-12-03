@@ -38,7 +38,11 @@ search_areas.each do |area|
           name: business.name,
           phone: business.phone,
           url: business.url,
-          address: business.location.display_address
+          street: business.location.address.first,
+          city: business.location.city,
+          state: business.location.state_code,
+          zip: business.location.postal_code,
+          #address: business.location.display_address
         }
       end
       params[:offset] += max_results
