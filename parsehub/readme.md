@@ -13,6 +13,7 @@ If you need to specify other data, such as variables used in your Parsehub proje
 ```ruby
 PARSEHUB_KEY = "MY_PARSEHUB_KEY"
 parsehub_project_token = "PROJECT_TOKEN_HERE"
+# below, note how we're escaping the key/value hash
 parsehub_form_data = { :start_value_override => "{\"my_key_goes_here\": \"my_value_goes_here\"}" }
 new_run = ParsehubRun.create_parsehub_run parsehub_project_token, parsehub_form_data
 ```
