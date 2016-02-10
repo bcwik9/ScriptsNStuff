@@ -52,7 +52,6 @@ new_run.complete?
 ```
 
 ### Get results from a ParsehubRun
-First, check that your run is done running:
 ```ruby
 run = ParsehubRun.find <model id>
 if run.complete?
