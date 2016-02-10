@@ -24,14 +24,16 @@ class ParsehubRun < ActiveRecord::Base
 
   def get_status
     response = ParsehubRun.parsehub_get "https://www.parsehub.com/api/v2/runs/#{run_token}"
-    update(complete: (response['data_ready'] == 1))
+    update!(complete: (response['data_ready'] == 1))
     response
   end
 
   def get_results
-    results = ParsehubRun.parsehub_get "https://www.parsehub.com/api/v2/runs/#{run_token}/data"
-    update(results: results) if complete
-    results
+    if complete?
+      results = ParsehubRun.parsehub_get "https://www.parsehub.com/api/v2/runs/#{run_token}/data"
+      update!(results: results.to_json)
+      return results
+    end
   end
 
   def delete_from_parsehub
