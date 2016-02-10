@@ -55,7 +55,15 @@ new_run.complete?
 First, check that your run is done running:
 ```ruby
 run = ParsehubRun.find <model id>
-results = run.get_results if run.complete?
+if run.complete?
+  # run is already complete and we have the results in our database
+  json_results = run.results
+  results = JSON.parse json_results
+else
+  # run hasn't completed yet. update the status, check if it's complete, and then get results
+  run.get_status # update status
+  results = run.get_results if run.complete? # update results if run is complete
+end
 ```
 
 `results` will be a key/value hash. If the run isn't complete, it will return `nil`.
