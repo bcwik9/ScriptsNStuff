@@ -67,3 +67,11 @@ end
 ```
 
 `results` will be a key/value hash. If the run isn't complete, it will return `nil`.
+
+### Update status of all incomplete ParsehubRun, and get results if they're complete
+```ruby
+ParsehubRun.where(complete: false).each do |run|
+  run.get_status
+  run.get_results if run.complete?
+end
+```
