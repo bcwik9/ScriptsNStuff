@@ -8,16 +8,16 @@ class ParsehubRun < ActiveRecord::Base
     JSON.parse response.body
   end
 
-  def self.parsehub_post url, form_data={}
+  def self.parsehub_post url, options=nil
     uri = URI.parse(url)
-    form_data ||= {}
-    form_data[:api_key] = PARSEHUB_KEY
+    form_data = { api_key: PARSEHUB_KEY }
+    form_data[:start_value_override] = options.to_json unless options.nil?
     uri.query = URI.encode_www_form(form_data)
     response =  Net::HTTP.post_form(uri, form_data)
     JSON.parse response.body
   end
 
-  def self.create_parsehub_run project_token, form_data={}
+  def self.create_parsehub_run project_token, form_data=nil
     response = ParsehubRun.parsehub_post "https://www.parsehub.com/api/v2/projects/#{project_token}/run", form_data
     ParsehubRun.create!(run_token: response['run_token'], project_token: project_token)
   end

@@ -14,10 +14,10 @@ If you need to specify other data, such as variables used in your Parsehub proje
 PARSEHUB_KEY = "MY_PARSEHUB_KEY"
 parsehub_project_token = "PROJECT_TOKEN_HERE"
 # below, note how we're escaping the key/value hash
-parsehub_form_data = { :start_value_override => "{\"my_key_goes_here\": \"my_value_goes_here\"}" }
+parsehub_form_data = { my_key: :my_value, another_key: true }
 new_run = ParsehubRun.create_parsehub_run parsehub_project_token, parsehub_form_data
 ```
-and now your project can reference `my_key_goes_here` for links and other places where variables are accepted in your Parsehub project.
+and now your project can reference `my_key` for links, conditional statements, expressions, and other places where variables are accepted in your Parsehub project.
 
 ### Check the status of a ParsehubRun
 Let's say you created a new ParsehubRun (using the method described above):
