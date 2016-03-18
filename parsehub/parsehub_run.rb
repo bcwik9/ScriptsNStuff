@@ -4,8 +4,11 @@ class ParsehubRun < ActiveRecord::Base
   def self.parsehub_get url
     uri = URI.parse(url)
     uri.query = URI.encode_www_form({:api_key => PARSEHUB_KEY})
-    response =  Net::HTTP.get_response(uri)
-    JSON.parse response.body
+
+    ParsehubRun.retry_block do
+      response =  Net::HTTP.get_response(uri)
+      return JSON.parse response.body
+    end
   end
 
   def self.parsehub_post url, options=nil
@@ -13,13 +16,32 @@ class ParsehubRun < ActiveRecord::Base
     form_data = { api_key: PARSEHUB_KEY }
     form_data[:start_value_override] = options.to_json unless options.nil?
     uri.query = URI.encode_www_form(form_data)
-    response =  Net::HTTP.post_form(uri, form_data)
-    JSON.parse response.body
+
+    ParsehubRun.retry_block do
+      response =  Net::HTTP.post_form(uri, form_data)
+      return JSON.parse response.body
+    end
   end
 
   def self.create_parsehub_run project_token, form_data=nil
     response = ParsehubRun.parsehub_post "https://www.parsehub.com/api/v2/projects/#{project_token}/run", form_data
     ParsehubRun.create!(run_token: response['run_token'], project_token: project_token)
+  end
+
+  def self.retry_block
+    max_retries = 2
+    retry_count = 0
+    while retry_count < max_retries
+      begin
+        yield
+      rescue Exception => e
+        # there was some kind of network error
+        # increment retry count, wait, and try again
+        retry_count += 1
+        raise "Retry count exceeded with error: #{e.message}" if retry_count == max_retries
+        sleep 1
+      end
+    end
   end
 
   def get_status
@@ -41,9 +63,12 @@ class ParsehubRun < ActiveRecord::Base
     uri.query = URI.encode_www_form({api_key: PARSEHUB_KEY})
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-    request =  Net::HTTP::Delete.new(uri.request_uri)
-    response = http.request(request)
-    JSON.parse response.body
+    
+    ParsehubRun.retry_block do
+      request =  Net::HTTP::Delete.new(uri.request_uri)
+      response = http.request(request)
+      return JSON.parse response.body
+    end
   end
   
 end
