@@ -13,8 +13,9 @@ client = Yelp::Client.new({ consumer_key: 'jt1n4V-SWZuF2zsUveiNwQ',
 
 # Search options
 save_to = 'yelp_results.json'
-search_terms = ['transportation', 'limo', 'party bus']
-search_areas = ['Boston, MA', 'Springfield, MA', 'Hartford, CT', 'New Haven, CT', 'New London, CT', 'Albany, NY', 'Newport, RI', 'Providence, RI', 'Plymouth, MA', 'Barnstable, MA', 'Portsmouth, NH', 'Manchester, NH', 'Laconia, NH', 'Portland, ME', 'Brunswick, ME', 'Philadelphia, PA', 'Cherry Hill, NJ', 'Atlantic City, NJ', 'Toms River, NJ', 'Princeton, NJ', 'Allentown, PA', 'Scranton, PA', 'Harrisburg, PA', 'Baltimore, MD', 'Washington DC', 'Alexandria, VA', 'Richmond, VA', 'Harrisonburg, VA', 'Charlottesville, VA', 'Ocean City, MD']
+search_terms = ['wedding planner', 'event planner']
+#search_areas = ['Boston, MA', 'Springfield, MA', 'Hartford, CT', 'New Haven, CT', 'New London, CT', 'Albany, NY', 'Newport, RI', 'Providence, RI', 'Plymouth, MA', 'Barnstable, MA', 'Portsmouth, NH', 'Manchester, NH', 'Laconia, NH', 'Portland, ME', 'Brunswick, ME', 'Philadelphia, PA', 'Cherry Hill, NJ', 'Atlantic City, NJ', 'Toms River, NJ', 'Princeton, NJ', 'Allentown, PA', 'Scranton, PA', 'Harrisburg, PA', 'Baltimore, MD', 'Washington DC', 'Alexandria, VA', 'Richmond, VA', 'Harrisonburg, VA', 'Charlottesville, VA', 'Ocean City, MD']
+search_areas = ['Philadelphia, PA']
 max_results = 20 # Yelp API max is 20, otherwise it will error
 
 # Start searching
