@@ -41,4 +41,4 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 alias ls='ls --color=auto -la'
-export PS1='[\[\033[31;1m\u\[\033[0m@\[\033[34;1m\h\[\033[0m \[\033[32m\w\[\033[0m]>> '
+#export PS1='[\[\033[31;1m\u\[\033[0m@\[\033[34;1m\h\[\033[0m \[\033[32m\w\[\033[0m]>> '
