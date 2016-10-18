@@ -3,6 +3,7 @@ require 'json'
 require 'timeout'
 
 max_time_per_company = 30 # seconds
+delay_between_pages = 1 # seconds
 file = 'weddingwire_boston.json' # typically this is a result from Parsehub
 json_data = File.readlines(file).join ''
 companies = JSON.parse(json_data)['companies'] #['company']
@@ -15,6 +16,8 @@ companies.each do |company|
     Timeout::timeout(max_time_per_company) do
       Spidr.site(website_url) do |spider|
         spider.every_html_page do |page|
+          sleep delay_between_pages # some sites limit traffic
+
           # skip certain pages
           page_url = page.url.to_s
           skip = false
