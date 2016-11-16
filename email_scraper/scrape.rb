@@ -1,24 +1,26 @@
+# This script runs through a list of websites and attempts to scrape emails off those sites. Typically used in conjunction with Parsehub.
+
 require 'spidr'
 require 'json'
 require 'timeout'
 
-files = Dir.glob("weddingwire_*.json") # typically this is a result from Parsehub
-type = :weddingwire # change this depending on website parsehub template we're processing
+files = Dir.glob("*.json") # typically this is a result from Parsehub
+type = :yelp # change this depending on website parsehub template we're processing
 delay_between_pages = 1
 max_time_per_company = 30 # seconds
 
 template_mappings = {
-  bizbash: {
-    lead_name: 'leads',
-    url_name: 'url'
-  },
-  weddingwire: {
+  default: {
     lead_name: 'companies',
     url_name: 'website'
   },
-  theknot: {
-    lead_name: 'company',
-    url_name: 'website'
+  yelp: {
+    lead_name: 'companies',
+    url_name: 'website_url'
+  },
+  bizbash: {
+    lead_name: 'leads',
+    url_name: 'url'
   }
 }
 
@@ -30,6 +32,10 @@ files.each do |file|
   companies.each do |company|
     website_url = company[template_mappings[type][:url_name]]
     next if website_url.nil?
+    if(type == :yelp)
+      # yelp escapes/encodes its URLs
+      website_url = URI.unescape($1) if website_url =~ /url=(http.+)&website_link/
+    end
     uri = URI(website_url)
     uri = URI('http://' + website_url) if uri.scheme.nil? # must have http://
 
