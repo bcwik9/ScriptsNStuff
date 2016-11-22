@@ -1,11 +1,28 @@
 # This script runs through a list of websites and attempts to scrape emails off those sites. Typically used in conjunction with Parsehub.
-
 require 'spidr'
 require 'json'
 require 'timeout'
 require 'net/http'
+require 'open-uri'
+require 'open_uri_redirections'
 
-SKIP_PAGES = ['jpg', 'pdf', 'css'] # add extensions here to ignore them
+### OPTIONS
+files = Dir.glob("*.json") # typically this is a result from Parsehub. will reprocess file if filename ends in ".processed"
+# yelp encodes urls
+unescape_urls = true
+# how long to wait between requesting pages to not overload and flag servers. minimum should be 1 seconds
+delay_between_pages = 1
+# max number of websites to process in parallel
+max_website_threads = 1
+# how to navigate the json
+website_key = 'companies'
+url_key = 'website'
+
+def filter_url url
+  # add pages to ignore here
+  skip = ['jpg', 'pdf', 'css', 'ico', 'png']
+  skip.any? { |s| url =~ /\.#{s}$/i }
+end
 
 def scrape_emails webpage_source
   email_regex = /(([\w+\-](\.[\w+\-])?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+)/i
@@ -13,8 +30,10 @@ def scrape_emails webpage_source
   matches = webpage_source.scan email_regex
   matches.each do |match|
     email = match.first.to_s
-    puts "FOUND EMAIL: #{email}"
-    emails.push email unless emails.include? email
+    unless filter_url(email) || emails.include?(email)
+      puts "FOUND EMAIL: #{email}"
+      emails.push email
+    end
   end
   emails
 end
@@ -47,137 +66,132 @@ def scrape_webpage_links webpage_source, uri
 end
 
 def get_webpage_source_for uri
-  response = Net::HTTP.get_response uri
-  source = response.body
-  
-  # check for a redirect
-  if response.code == "301"
-    uri = URI.parse response.header['location']
-    source = Net::HTTP.get uri
-  end
+  source = ""
+  begin
+    # TODO: rewrite this using open-uri which handles redirects automatically
+    source =  open(uri.to_s, allow_redirections: :all).read
 
-  # if we still don't have anything, try adding/removing "www"
-  if source.empty?
-    if uri.to_s =~ /www/i
-      uri = URI(uri.to_s.gsub("http://www.", "http://"))
-    else
-      uri = URI(uri.to_s.gsub("http://", "http://www."))
+    # if we still don't have anything, try adding/removing "www"
+    if source.empty?
+      if uri.to_s =~ /www/i
+        uri = URI(uri.to_s.gsub("http://www.", "http://"))
+      else
+        uri = URI(uri.to_s.gsub("http://", "http://www."))
+      end
+      source = open(uri.to_s, allow_redirections: :all).read
     end
-    source = Net::HTTP.get uri
+  rescue Exception => e
+    puts "Error fetching #{uri}: #{e}"
   end
   source
 end
 
-def scrape_site_for_emails uri
+def secondary_scrape_site_for_emails uri, options={}
+  options[:timeout] ||= 60
   source = get_webpage_source_for uri
   urls = scrape_webpage_links source, uri
   all_emails = []
   all_emails += scrape_emails(source)
-  important_urls = ['about', 'contact']
+  important_urls = ['about', 'contact', 'faq']
   process_first = urls.select{|website| important_urls.any?{|u| website.include?(u)} }
   urls -= process_first
-  (process_first + urls).each do |url|
-    begin
-      next if SKIP_PAGES.any? {|s| url =~ /#{s}/}
-      sleep 1
-      uri = URI(url)
-      puts "Checking #{uri}"
-      all_emails += scrape_emails(get_webpage_source_for(uri))
-    rescue
-      puts "Skipping bad url: \"#{url}\""
+  begin
+    Timeout::timeout(options[:timeout]) do
+      (process_first + urls).each do |url|
+        begin
+          next if filter_url(url)
+          sleep 1
+          uri = URI(url)
+          puts "Checking #{uri}"
+          all_emails += scrape_emails(get_webpage_source_for(uri))
+        rescue
+          puts "Skipping bad url: \"#{url}\""
+        end
+      end
     end
+  rescue Exception => e
+    puts "Secondary scraped for #{uri} timed out or there was an error #{e}"
   end
-  all_emails.uniq
+  all_emails.uniq!
+  puts "Secondary scrape found #{all_emails.size} emails"
+  all_emails
 end
 
 
-### INIT
-files = Dir.glob("*.json") # typically this is a result from Parsehub
-type = :yelp # change this depending on website parsehub template we're processing
-delay_between_pages = 1
-max_time_per_company = 30 # seconds
-
-template_mappings = {
-  default: {
-    lead_name: 'companies',
-    url_name: 'website'
-  },
-  yelp: {
-    lead_name: 'companies',
-    url_name: 'website_url'
-  },
-  bizbash: {
-    lead_name: 'leads',
-    url_name: 'url'
-  }
-}
-
+### START
 files.each_with_index do |file, file_index|
   puts "Processing file #{file} (#{file_index+1}/#{files.size})"
   json_data = File.readlines(file).join ''
-  companies = JSON.parse(json_data)[template_mappings[type][:lead_name]]
+  companies = JSON.parse json_data
+  companies = companies[website_key] unless file =~ /\.processed$/
+  start_time = Time.now
+  website_threads = []
 
   companies.each_with_index do |company, company_index|
-    website_url = company[template_mappings[type][:url_name]]
-    next if website_url.nil?
-    if(type == :yelp)
-      # yelp escapes/encodes its URLs
-      website_url = URI.unescape($1) if website_url =~ /url=(http.+)&website_link/
-    end
+    website_url = company[url_key]
+    next if website_url.nil? || (company['scraped_emails'] && !company['scraped_emails'].empty?)
+    website_url = URI.unescape website_url if unescape_urls
     uri = URI(website_url)
     uri = URI('http://' + website_url) if uri.scheme.nil? # must have http://
+    company[url_key] = website_url if unescape_urls # update url so we don't have to unescape again
 
-    begin
-      Timeout::timeout(max_time_per_company) do
-        Spidr.site(uri) do |spider|
-          spider.every_html_page do |page|
-            sleep delay_between_pages
-            
-            # skip certain pages
-            page_url = page.url.to_s
-            skip = false
-            SKIP_PAGES.each do |extension|
-              skip = true if page_url =~ /\.#{extension}/i
+    # limit the number of threads running
+    while website_threads.size >= max_website_threads do
+      sleep 2
+      website_threads.each do |t|
+        unless t.alive?
+          t.join
+          website_threads.delete t
+        end
+      end
+    end
+    
+    website_threads << Thread.new {
+      begin
+        Timeout::timeout(30) do
+          Spidr.site(uri) do |spider|
+            spider.every_html_page do |page|
+              sleep delay_between_pages
+              
+              # skip certain pages
+              page_url = page.url.to_s
+              if filter_url(page_url)
+                puts "Skipping #{page.url}"
+                next
+              end
+              
+              puts "File #{file_index+1}/#{files.size} (#{file}). Company #{company_index+1}/#{companies.size}. Checking #{page.url}"
+              company['scraped_emails'] ||= []
+              company['scraped_phone_numbers'] ||= []
+              
+              company['scraped_emails'] = (company['scraped_emails'] + scrape_emails(page.body)).uniq
+              company['scraped_phone_numbers'] = (company['scraped_phone_numbers'] + scrape_phone_numbers(page.body)).uniq
             end
-            if skip
-              puts "Skipping #{page.url}"
-              next
-            end
-
-            puts "File #{file_index+1}/#{files.size} (#{file}). Company #{company_index+1}/#{companies.size}. Checking #{page.url}"
-            company['scraped_emails'] ||= []
-            company['scraped_phone_numbers'] ||= []
-
-            company['scraped_emails'] = (company['scraped_emails'] + scrape_emails(page.body)).uniq
-            company['scraped_phone_numbers'] = (company['scraped_phone_numbers'] + scrape_phone_numbers(page.body)).uniq
           end
         end
+      rescue
+        puts "#{uri} timed out after 30 seconds or there was an error"
       end
-    rescue
-      puts "#{uri} timed out after #{max_time_per_company} seconds or there was an error"
-    end
-
-    # if no emails were found, try secondary scraper
-    if company['scraped_emails'].nil? || company['scraped_emails'].empty?
-      begin
-        Timeout::timeout(max_time_per_company*2) do
-          puts "No emails found for #{uri}. Attempting secondary scrape"
-          company['scraped_emails'] = scrape_site_for_emails uri
-        end
-      rescue Exception => e
-        puts "#{uri} secondary scrape timed out after #{max_time_per_company*2} seconds: #{e}"
-        puts e.to_s
+      
+      # if no emails were found, try secondary scraper
+      if company['scraped_emails'].nil? || company['scraped_emails'].empty?
+        puts "No emails found for #{uri}. Attempting secondary scrape"
+        company['scraped_emails'] = secondary_scrape_site_for_emails uri
       end
-    end
+    }
   end
+
+  # make sure all threads are done processing
+  website_threads.each { |t| t.join }
 
   # post processing
   companies.each do |c|
-    c['scraped_phone_numbers'] = c['scraped_phone_numbers'].join ', ' unless c['scraped_phone_numbers'].nil?
-    c['scraped_emails'] = c['scraped_emails'].join ', ' unless c['scraped_emails'].nil?
+    c['scraped_phone_numbers'] = c['scraped_phone_numbers'].join ', ' if c['scraped_phone_numbers'].is_a? Array
+    c['scraped_emails'] = c['scraped_emails'].join ', ' if c['scraped_emails'].is_a? Array
   end
 
   File.open "#{file}\.processed", 'w' do |f|
     f.puts companies.to_json
   end
+  puts "Finished processing #{file}. Elapsed time: #{(Time.now - start_time)/60} minutes"
 end
