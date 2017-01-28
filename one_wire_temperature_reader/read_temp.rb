@@ -15,5 +15,5 @@ while true
     end
   end
   threads.each { |t| t.join }
-  puts "num_sensors: #{threads.size}, high: #{high}f, low: #{low}f, avg: #{sum/threads.size.to_f}, diff: #{high-low}f"
+  puts "num_sensors: #{threads.size}, low: #{low}f, high: #{high}f, avg: #{sum/threads.size.to_f}, diff: #{high-low}f"
 end
