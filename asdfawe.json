@@ -1,9 +1,40 @@
 {
-  "+": "https://jasonette.github.io/Jasonpedia/webcontainer/template.json",
-  "title": "iframe",
-  "theme": "rgba(0,0,0,0)",
-  "html": "<html><style>iframe,body,html{width:100%;height:100%;margin:0;padding:0;}</style><iframe src='https://qa.buster.com/iframe/widget_planner' frameborder='0' scrolling='yes'></iframe></html>",
-  "action": {
-    "type": "$default"
+  "$jason": {
+    "head": {
+      "title": "Buster",
+      "styles": {
+        "bold": {
+          "font": "HelveticaNeue-CondensedBold",
+          "size": "15"
+        },
+        "padded": {
+          "padding": "10"
+        },
+        "normal": {
+          "font": "HelveticaNeue",
+          "size": "12"
+        }
+      },
+      "actions": {
+        "$foreground": {
+          "type": "$reload"
+        }
+      }
+    },
+    "body": {
+        "header": {
+          "title": "Jasonpedia",
+          "style": {
+            "background": "#8bb92d",
+            "color": "#ffffff",
+            "font": "AvenirNext-Bold",
+            "size": "14"
+          }
+        },
+        "background": {
+          "type": "html",
+          "url": "https://qa.buster.com/iframe/widget_planner"
+        }
+    }
   }
 }
