@@ -16,7 +16,7 @@
       },
       "background": {
         "type": "html",
-        "url": "https://cwik.buster.com/iframe/widget_planner"
+        "url": "https://platform.twitter.com/widgets/tweet_button.html"
       }
     }
   }
