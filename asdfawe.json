@@ -23,9 +23,9 @@
     },
     "body": {
         "header": {
-          "title": "Jasonpedia",
+          "title": "Buster",
           "style": {
-            "background": "#8bb92d",
+            "background": "#3fcb93",
             "color": "#ffffff",
             "font": "AvenirNext-Bold",
             "size": "14"
