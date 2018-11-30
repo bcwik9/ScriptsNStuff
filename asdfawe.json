@@ -33,7 +33,10 @@
         },
         "background": {
           "type": "html",
-          "url": "https://qa.buster.com/iframe/widget_planner?aswevwev"
+          "url": "https://qa.buster.com/iframe/widget_planner?aswevwev",
+          "action": {
+            "type": "$default"
+          }
         }
     }
   }
