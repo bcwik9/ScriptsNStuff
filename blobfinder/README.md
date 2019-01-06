@@ -8,28 +8,19 @@ A different method might be to locate the blob structure and then iterate around
 One enhancement I could make is to allow txt files to be passed in as a parameter, and it will read the text file and turn it in to a blob array.
 
 
-Sample input:
-
+Sample 10x10 input:
+```
 0000000000
-
 0011100000
-
 0011111000
-
 0010001000
-
 0011111000
-
 0000101000
-
 0000101000
-
 0000111000
-
 0000000000
-
 0000000000
-
+```
 
 Sample output:
 
