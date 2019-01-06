@@ -23,13 +23,10 @@ Sample 10x10 input:
 ```
 
 Sample output:
-
+```
 Cell Reads: 44
-
 Top: 1
-
 Left: 2
-
 Bottom: 7
-
 Right: 6
+```
