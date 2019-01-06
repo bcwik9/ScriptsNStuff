@@ -22,7 +22,8 @@ class WikipediaSearch
         format: :json,
         action: :query,
         redirects: true,
-        prop: :extracts,
+        prop: params[:prop] || :extracts,
+        pithumbsize: params[:image_size] || 1920, # image width size control. default to largest
         exintro: true,
         explaintext: true,
       }
@@ -43,9 +44,20 @@ class WikipediaSearch
       page['extract'] if page.present?
     end
 
+    def get_image_from_search_for term
+      pages = get_extracts(titles: get_title_from_search_for(term), prop: :pageimages)
+      page = pages.first.last if pages.present?
+      if page.present? && page['thumbnail'].present?
+        ret = page['thumbnail']
+        ret['url'] = ret.delete('source')
+        ret['external_source'] = 'wikipedia'
+        return ret
+      end
+    end
+
     def get_title_from_search_for term
       pages = search_for term
-      pages.first['title'] if pages.first.present?
+      pages.first['title'] if pages.present? && pages.first.present?
     end
 
     private
