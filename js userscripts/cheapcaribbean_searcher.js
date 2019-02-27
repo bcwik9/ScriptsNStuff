@@ -9,14 +9,14 @@
 // load datatables css
 $('head').append('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dynatable/0.3.1/jquery.dynatable.min.css" type="text/css" />');
 
-// store all our data if we want to process later
-var results = {}
-
+var results = {} // store all our data if we want to process later
+var search_area = $("#searchlist,.ccContent div.twoColumns:first")
 var results_wait_delay = 10000
 
 var results_done = function(){
   $("#search_status").text("")
   // display results on table
+  search_area.html('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th></tr></thead><tbody></tbody></table>')
   $.each(results, function(name, info){
     $("#hotel_table tbody").append('<tr><td><a target="_blank" href="' + info["url"] + '">' + name + '</a></td><td>' + info["location"] + '</td><td>' + info["price"] + '</td><td>' + info["site_rating"] + '</td><td>' + info["customer_rating"] + '</td></tr>')
   })
@@ -63,7 +63,7 @@ var execute_search = function(){
   // disable button
   $("#searchItAll").css("display", "none")
   // replace existing results with new table
-  $("#searchlist,.ccContent div.twoColumns:first").html('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th></tr></thead><tbody></tbody></table><h1 id="search_status">Searching EVERYTHING... found 0 results.</h3>')
+  search_area.html('<h1 id="search_status">Searching EVERYTHING... found 0 results.</h3>')
   window.table_timeout = window.setTimeout(results_done, results_wait_delay)
   
   // search everything!
