@@ -89,9 +89,9 @@ var init = function(){
   $(".viewResults").append('<br><br><button id="searchItAll" type="button" class="commonButton oneColumnButton" style="width:100%">Search Everything</button>')
   $("#searchItAll").click(execute_search)
   // hide search button if user changes form
-  $("#osbForm input,select").change(function(){
+  $("#osbForm input,select").click(function(){
     $("#searchItAll").css("display", "none")
   })
 }
 
-setTimeout(init, 1000)
+setTimeout(init, 1500)
