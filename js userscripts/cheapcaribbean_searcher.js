@@ -20,7 +20,10 @@ var results_done = function(){
   $.each(results, function(name, info){
     $("#hotel_table tbody").append('<tr><td><a target="_blank" href="' + info["url"] + '">' + name + '</a></td><td>' + info["location"] + '</td><td>' + info["price"] + '</td><td>' + info["site_rating"] + '</td><td>' + info["customer_rating"] + '</td></tr>')
   })
-  $('#hotel_table').dynatable({
+  $('#hotel_table').bind('dynatable:init', function(e, dynatable) {
+    dynatable.sorts.add('price', 1);
+    dynatable.paginationPerPage.set(20);
+  }).dynatable({
     readers: {
       'price': function(el, record) {
         return Number(el.innerHTML) || 0;
@@ -59,8 +62,8 @@ var parse_hotel_results = function(data,status){
 var execute_search = function(){
   // disable button
   $("#searchItAll").css("display", "none")
-  // create table to display results
-  $(".ccContent").prepend('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th></tr></thead><tbody></tbody></table><h1 id="search_status">Searching EVERYTHING... found 0 results.</h3>')
+  // replace existing results with new table
+  $("#searchlist,.ccContent div.twoColumns:first").html('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th></tr></thead><tbody></tbody></table><h1 id="search_status">Searching EVERYTHING... found 0 results.</h3>')
   window.table_timeout = window.setTimeout(results_done, results_wait_delay)
   
   // search everything!
@@ -83,7 +86,7 @@ var execute_search = function(){
 
 var init = function(){
   // create button to click to search
-  $(".viewResults").append('<button id="searchItAll" type="button" class="commonButton oneColumnButton">Search Everything</button>')
+  $(".viewResults").append('<br><br><button id="searchItAll" type="button" class="commonButton oneColumnButton" style="width:100%">Search Everything</button>')
   $("#searchItAll").click(execute_search)
   // hide search button if user changes form
   $("#osbForm input,select").change(function(){
@@ -92,4 +95,3 @@ var init = function(){
 }
 
 setTimeout(init, 1000)
-
