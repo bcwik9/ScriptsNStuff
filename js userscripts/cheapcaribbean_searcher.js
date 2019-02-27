@@ -16,9 +16,9 @@ var results_wait_delay = 10000
 var results_done = function(){
   $("#search_status").text("")
   // display results on table
-  search_area.html('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th></tr></thead><tbody></tbody></table>')
+  search_area.html('<table id="hotel_table" style="width:100%"><thead><tr><th>Name</th><th>Location</th><th>Price</th><th>Rating</th><th>Customer Rating</th><th>Number Reviews</th></tr></thead><tbody></tbody></table>')
   $.each(results, function(name, info){
-    $("#hotel_table tbody").append('<tr><td><a target="_blank" href="' + info["url"] + '">' + name + '</a></td><td>' + info["location"] + '</td><td>' + info["price"] + '</td><td>' + info["site_rating"] + '</td><td>' + info["customer_rating"] + '</td></tr>')
+    $("#hotel_table tbody").append('<tr><td><a target="_blank" href="' + info["url"] + '">' + name + '</a></td><td>' + info["location"] + '</td><td>' + info["price"] + '</td><td>' + info["site_rating"] + '</td><td>' + info["customer_rating"] + '</td><td>' + info["num_reviews"] + '</td></tr>')
   })
   $('#hotel_table').bind('dynatable:init', function(e, dynatable) {
     dynatable.sorts.add('price', 1);
@@ -26,6 +26,9 @@ var results_done = function(){
   }).dynatable({
     readers: {
       'price': function(el, record) {
+        return Number(el.innerHTML) || 0;
+      },
+      'numberReviews': function(el, record) {
         return Number(el.innerHTML) || 0;
       }
     }
@@ -50,6 +53,7 @@ var parse_hotel_results = function(data,status){
     info["price"] = $(resort).find(".from-price").text().trim().replace(/(\$|,|\*)/g,'')
     info["site_rating"] = $(resort).find(".cc-rating .rating-text strong").text()
     info["customer_rating"] = $(resort).find(".customer-rating .rating-text strong").text()
+    info["num_reviews"] = $(resort).find(".customer-rating a:last").text().replace(/\s+Reviews?/, '')
     // save result for later processing
     results[name]= info
     // reset results done event
