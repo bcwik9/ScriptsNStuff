@@ -11,7 +11,7 @@ You might have to run a command to set up one wire before the devices show up.
 - Connect wires to 3.3v, GROUND, and LCD-D2 for data (see [this](https://docs.getchip.com/chip.html#gpio)). Make sure you have latest firmware (`sudo apt update` and `sudo apt upgrade`)
 - Run the script
 
-### Onion Omega2
+### [Onion Omega2](https://onion.io/2bt-reading-temperature-from-a-1-wire-sensor/)
 - Connect wires to 3.3v, GROUND, and GPIO data pin.
 - Run command `insmod w1-gpio-custom bus0=0,<YOUR GPIO PIN NUMBER HERE>,0` to enable one wire devices
   - ex. if I have the data wire plugged in to GPIO 18, my command would look like `insmod w1-gpio-custom bus0=0,18,0`
