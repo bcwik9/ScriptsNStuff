@@ -14,6 +14,7 @@ while true
       puts "sensor #{sensor_folder}: #{temperature_f}f"
     end
   end
+  raise "No devices found. Do you have to run a command to enable one wire devices first?" if threads.size == 0
   threads.each { |t| t.join }
   puts "num_sensors: #{threads.size}, low: #{low}f, high: #{high}f, avg: #{sum/threads.size.to_f}, diff: #{high-low}f"
 end
