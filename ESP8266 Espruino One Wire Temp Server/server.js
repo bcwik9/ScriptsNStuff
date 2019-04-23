@@ -3,6 +3,7 @@ E.on('init', function() {
   var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
 
   var wifi = require('Wifi');
+  wifi.setHostname("TempReader");
   wifi.connect(
     WIFI_NAME,
     WIFI_OPTIONS,
