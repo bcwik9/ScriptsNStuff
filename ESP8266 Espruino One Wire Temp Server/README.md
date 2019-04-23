@@ -11,6 +11,6 @@ This is a lightweight server that reads one wire temperature sensors (specifical
     esptool.py --port /dev/ttyUSB0 --baud 115200 write_flash --flash_size=detect -fm dio 0 espruino_2v01_esp8266_4mb_combined_4096.bin
     ```
 - You should now be able to connect to the ESP8266 by running: `screen /dev/ttyUSB0 115200`
-- Copy and paste the contents of the file to the ESP8266 terminal
+- Copy and paste the contents of the server.js file to the ESP8266 terminal
   - First be sure to replace your Wifi credentials in the file!
 - A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load with temperatures!
