@@ -15,3 +15,8 @@ This is a lightweight server that reads one wire temperature sensors (specifical
 - Copy and paste the contents of the server.js file to the ESP8266 terminal
   - First be sure to replace your Wifi credentials in the file!
 - A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load with temperatures!
+- (Optional) Run this command to set the name of your device to something recognizable in your router list and to other devices:
+```
+var wifi = require('Wifi');
+wifi.setHostname("MyDeviceName");
+```
