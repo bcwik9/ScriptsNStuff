@@ -41,7 +41,7 @@ function resetData(){
 function runServer() {
   var http = require('http');
   http.createServer(function(req, res) {
-    res.writeHead(200);
+    res.writeHead(200, {'Content-Type': 'application/json'});
     var status = req.url.replace('/?', '');
     //if (status === 'on') ledStatus(1);
     //if (status === 'off') ledStatus(0);
@@ -58,7 +58,13 @@ function runServer() {
     var ready_interval = setInterval(function(){
       if(num_readings >= sensors.length){
         clearInterval(ready_interval);
-        res.end('Num Sensors: ' + sensors.length + ', Low: ' + low + ', High: ' + high + ', Avg: ' + (sum/sensors.length) + ', Diff: ' + (high-low));
+        res.end(JSON.stringify({
+          num_sensors: sensors.length,
+          low: low,
+          high: high,
+          avg: (sum/sensors.length),
+          diff: (high-low)
+        }));
       }
     }, 200);
 }).listen(3000);
