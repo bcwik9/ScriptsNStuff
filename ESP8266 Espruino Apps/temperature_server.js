@@ -3,6 +3,7 @@ E.on('init', function() {
   var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
 
   var wifi = require('Wifi');
+  wifi.setHostname("EspTemperature");
   wifi.connect(
     WIFI_NAME,
     WIFI_OPTIONS,
@@ -42,10 +43,6 @@ function runServer() {
   var http = require('http');
   http.createServer(function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    var status = req.url.replace('/?', '');
-    //if (status === 'on') ledStatus(1);
-    //if (status === 'off') ledStatus(0);
-    
     resetData();
     var ow = new OneWire(13); // 13 is GPIO Pin number
     var sensors = ow.search().map(function (device) {
