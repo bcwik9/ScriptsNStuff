@@ -1,7 +1,7 @@
-### ESP8266 Espruino Apps One Wire Temp Server
+## ESP8266 Espruino Apps One Wire Temp Server
 Variety of lightweight [Espruino](https://github.com/espruino/Espruino) apps.
 
-#### General ESP8266 Setup
+### General ESP8266 Setup
 [Tutorial found here](https://cuneyt.aliustaoglu.biz/en/programming-esp8266-using-javascript-with-espruino/)
 - Flash your ESP8266 with [Espruino firmware](https://www.espruino.com/Download)
   - I downloaded the "combined" file: `espruino_2v01_esp8266_4mb_combined_4096.bin`
@@ -22,10 +22,10 @@ wifi.setHostname("MyDeviceName");
 wifi.save(); // load hostname even if power loss/restart
 ```
 
-#### temerature_server.js: App that reads one wire temperature sensors (specifically a DS18B20 sensor).
+### temerature_server.js: App that reads one wire temperature sensors (specifically a DS18B20 sensor).
 Additional Setup Instructions:
 - A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load with temperatures!
 
-#### relay_server.js: App that controls a relay. Can turn on/off.
+### relay_server.js: App that controls a relay. Can turn on/off.
 Additional Setup Instructions:
 - A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load. Going to `/on` in the browser will turn the relay on; going to `/off` in the browser will turn it off.
