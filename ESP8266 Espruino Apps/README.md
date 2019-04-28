@@ -3,6 +3,7 @@ Variety of lightweight [Espruino](https://github.com/espruino/Espruino) apps for
 
 ### General ESP8266 Setup
 [Tutorial found here](https://cuneyt.aliustaoglu.biz/en/programming-esp8266-using-javascript-with-espruino/)
+
 [Pinout diagram here](https://lastminuteengineers.com/wp-content/uploads/2018/08/ESP-12E-Development-Board-ESP8266-NodeMCU-Pinout.jpg)
 - Flash your ESP8266 with [Espruino firmware](https://www.espruino.com/Download)
   - I downloaded the "combined" file: `espruino_2v01_esp8266_4mb_combined_4096.bin`
