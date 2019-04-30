@@ -1,9 +1,20 @@
+var wifi_name = 'WIFI SSID NAME';
+var wifi_password = 'WIFI PASSWORD';
+var hostname = 'EspTemperature';
+
+// send data to io.adafruit.com platform
+var adafruit_io_api_key = 'IO.ADAFRUIT.COM API KEY';
+
+var http = require('http');
+var sensors;
+var high, low, sum, sensors;
+
 E.on('init', function() {
-  var WIFI_NAME = 'WIFI SSID NAME';
-  var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
+  var WIFI_NAME = wifi_name;
+  var WIFI_OPTIONS = { password: wifi_password };
 
   var wifi = require('Wifi');
-  wifi.setHostname("EspTemperature");
+  wifi.setHostname(hostname);
   wifi.connect(
     WIFI_NAME,
     WIFI_OPTIONS,
@@ -14,16 +25,16 @@ E.on('init', function() {
       }
       console.log('Connected!');
       setupSensors();
+      setInterval(sendTempToAdafruitIo, 60000);
       runServer();
     }
   );
 });
 
-var high, low, sum, sensors;
-
 function pollTemps(){
+  resetData();
   sensors.forEach(function(sensor, index) {
-    sensor.getTemp();
+    processTemp(sensor.getTemp());
   });
 }
 
@@ -47,6 +58,33 @@ function processTemp(celcius){
   sum += farenheit;
 }
 
+function sendTempToAdafruitIo(){
+  var payload = JSON.stringify({
+    value: (sum/sensors.length)
+  });
+  var opts = {
+    host: 'io.adafruit.com',
+    path: '/api/v2/sugarleaves/feeds/bedroom-temperature/data',
+    method: 'POST',
+    protocol: 'https:',
+    headers: {
+      'X-AIO-KEY': adafruit_io_api_key,
+      'Content-Length': payload.length,
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = require('http').request(opts, function(res){
+    res.on('data', function(data) {
+     //console.log("HTTP> "+data);
+    });
+  });
+  req.on('error', function(e) {
+    console.log('problem with request: ' + e.message);
+  });
+  req.end(payload);
+}
+
 function resetData(){
   high = -99999;
   low = 99999;
@@ -54,13 +92,8 @@ function resetData(){
 }
 
 function runServer() {
-  var http = require('http');
   http.createServer(function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    resetData();
-    sensors.forEach(function(sensor, index) {
-      processTemp(sensor.getTemp());
-    });
     res.end(JSON.stringify({
       num_sensors: sensors.length,
       low: low,
