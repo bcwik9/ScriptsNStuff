@@ -6,7 +6,6 @@ var hostname = 'EspTemperature';
 var adafruit_io_api_key = 'IO.ADAFRUIT.COM API KEY';
 
 var http = require('http');
-var sensors;
 var high, low, sum, sensors;
 
 E.on('init', function() {
