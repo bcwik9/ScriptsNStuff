@@ -3,7 +3,9 @@ var wifi_password = 'WIFI PASSWORD';
 var hostname = 'EspTemperature';
 
 // send data to io.adafruit.com platform
-var adafruit_io_api_key = 'IO.ADAFRUIT.COM API KEY';
+var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
+var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
+var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
 var http = require('http');
 var high, low, sum, sensors;
@@ -24,7 +26,7 @@ E.on('init', function() {
       }
       console.log('Connected!');
       setupSensors();
-      setInterval(sendTempToAdafruitIo, 60000);
+      setInterval(sendTempToAdafruit, 60000);
       runServer();
     }
   );
@@ -57,13 +59,14 @@ function processTemp(celcius){
   sum += farenheit;
 }
 
-function sendTempToAdafruitIo(){
+function sendTempToAdafruit(){
   var payload = JSON.stringify({
     value: (sum/sensors.length)
   });
+  var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
   var opts = {
     host: 'io.adafruit.com',
-    path: '/api/v2/sugarleaves/feeds/bedroom-temperature/data',
+    path: path,
     method: 'POST',
     protocol: 'https:',
     headers: {
