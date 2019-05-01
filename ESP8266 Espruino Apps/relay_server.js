@@ -21,8 +21,8 @@ function runServer() {
   var http = require('http');
   http.createServer(function(req, res) {
     res.writeHead(200);
-    if (status === '/on') digitalWrite(16,false);
-    if (status === '/off') digitalWrite(16,true);
+    if (status === '/on') digitalWrite(NodeMCU.D0, false);
+    if (status === '/off') digitalWrite(NodeMCU.D0, true);
     res.end();
 }).listen(3000);
 }

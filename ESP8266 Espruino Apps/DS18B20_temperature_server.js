@@ -1,6 +1,7 @@
 var wifi_name = 'WIFI SSID NAME';
 var wifi_password = 'WIFI PASSWORD';
 var hostname = 'EspTemperature';
+var onewire_pin = NodeMCU.D7;
 
 // send data to io.adafruit.com platform
 var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
@@ -8,7 +9,8 @@ var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
 var http = require('http');
-var high, low, sum, sensors;
+var sensors = {};
+var high, low, sum;
 
 E.on('init', function() {
   var WIFI_NAME = wifi_name;
@@ -32,20 +34,21 @@ E.on('init', function() {
   );
 });
 
-function pollTemps(){
-  resetData();
-  sensors.forEach(function(sensor, index) {
-    processTemp(sensor.getTemp());
+function calcTemps(){
+  high = -99999;
+  low = 99999;
+  sum = 0;
+  Object.keys(sensors).forEach(function(sensor_id, index) {
+    processTemp(sensors[sensor_id]);
   });
 }
 
 function setupSensors(){
-  var ow = new OneWire(13); // 13 is GPIO Pin number
-  sensors = ow.search().map(function (device) {
-    return require("DS18B20").connect(ow, device);
-  });
-  if (sensors.length === 0) print("No OneWire devices found");
-  setInterval(pollTemps, 5000);
+  var manager = require("OneWireTempManager").create([NodeMCU.D7]);
+  manager.callBack = function(sensor,temp) {
+     sensors[sensor.sCode] = temp;
+  };
+  manager.start();
 }
 
 function processTemp(celcius){
@@ -60,8 +63,9 @@ function processTemp(celcius){
 }
 
 function sendTempToAdafruit(){
+  calcTemps();
   var payload = JSON.stringify({
-    value: (sum/sensors.length)
+    value: (sum/Object.keys(sensors).length)
   });
   var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
   var opts = {
@@ -70,7 +74,7 @@ function sendTempToAdafruit(){
     method: 'POST',
     protocol: 'https:',
     headers: {
-      'X-AIO-KEY': adafruit_io_api_key,
+      'X-AIO-KEY': adafruit_api_key,
       'Content-Length': payload.length,
       'Content-Type': 'application/json'
     }
@@ -87,15 +91,10 @@ function sendTempToAdafruit(){
   req.end(payload);
 }
 
-function resetData(){
-  high = -99999;
-  low = 99999;
-  sum = 0;
-}
-
 function runServer() {
   http.createServer(function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
+    calcTemps();
     res.end(JSON.stringify({
       num_sensors: sensors.length,
       low: low,
