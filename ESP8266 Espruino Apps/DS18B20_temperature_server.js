@@ -99,7 +99,7 @@ function runServer() {
       num_sensors: sensors.length,
       low: low,
       high: high,
-      avg: (sum/sensors.length),
+      avg: (sum/Object.keys(sensors).length),
       diff: (high-low)
     }));
   }).listen(3000);
