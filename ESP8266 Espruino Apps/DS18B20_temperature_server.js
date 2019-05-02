@@ -45,6 +45,7 @@ function calcTemps(){
 
 function setupSensors(){
   var manager = require("OneWireTempManager").create([NodeMCU.D7]);
+  manager.C.POLL_PERIOD = 5000; // refresh temperature every 5 sec
   manager.callBack = function(sensor,temp) {
      sensors[sensor.sCode] = temp;
   };
