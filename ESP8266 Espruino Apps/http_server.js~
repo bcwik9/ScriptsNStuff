@@ -1,0 +1,19 @@
+var WIFI_NAME = wifi_name;
+var WIFI_OPTIONS = { password: wifi_password };
+
+E.on('init', function() {
+  var wifi = require('Wifi');
+  wifi.setHostname(hostname);
+  wifi.connect(
+    WIFI_NAME,
+    WIFI_OPTIONS,
+    function(err) {
+      if (err) {
+        console.log('Connection error: ' + err);
+        return;
+      }
+      console.log('Connected!');
+      runServer();
+    }
+  );
+});

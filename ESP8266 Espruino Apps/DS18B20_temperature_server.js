@@ -1,5 +1,5 @@
-var wifi_name = 'WIFI SSID NAME';
-var wifi_password = 'WIFI PASSWORD';
+var WIFI_NAME = 'WIFI SSID NAME';
+var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
 var hostname = 'EspTemperature';
 var onewire_pin = NodeMCU.D7;
 
@@ -8,14 +8,10 @@ var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
 var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
-var http = require('http');
 var sensors = {};
 var high, low, sum;
 
 E.on('init', function() {
-  var WIFI_NAME = wifi_name;
-  var WIFI_OPTIONS = { password: wifi_password };
-
   var wifi = require('Wifi');
   wifi.setHostname(hostname);
   wifi.connect(
@@ -29,7 +25,6 @@ E.on('init', function() {
       console.log('Connected!');
       setupSensors();
       setInterval(sendTempToAdafruit, 60000);
-      runServer();
     }
   );
 });
@@ -89,20 +84,6 @@ function sendTempToAdafruit(){
     console.log('problem with request: ' + e.message);
   });
   req.end(payload);
-}
-
-function runServer() {
-  http.createServer(function(req, res) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    calcTemps();
-    res.end(JSON.stringify({
-      num_sensors: sensors.length,
-      low: low,
-      high: high,
-      avg: (sum/Object.keys(sensors).length),
-      diff: (high-low)
-    }));
-  }).listen(3000);
 }
 
 save(); // make sure everything loads on restart
