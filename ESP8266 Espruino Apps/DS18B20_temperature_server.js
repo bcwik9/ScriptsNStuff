@@ -8,6 +8,10 @@ var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
 var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
+// I2C, for displaying data on a SSD1306 screen
+var sda_pin = NodeMCU.D1;
+var scl_pin = NodeMCU.D2;
+var graphics;
 var sensors = {};
 var high, low, sum;
 
@@ -25,9 +29,21 @@ E.on('init', function() {
       console.log('Connected!');
       setupSensors();
       startMqtt();
+      startDisplay();
     }
   );
 });
+
+function startDisplay(){
+  I2C1.setup({scl: scl_pin, sda: sda_pin});
+  graphics; = require("SSD1306").connect(I2C1, start);
+}
+
+function writeDisplay(msg){
+  //g.setFontVector(20); // set font size
+  g.drawString(msg,0,0);
+  g.flip(); // write to screen
+}
 
 function calcTemps(){
   high = -99999;
@@ -48,6 +64,7 @@ function setupSensors(){
 
 function processTemp(celcius){
   var farenheit = celcius * 9/5 + 32;
+  writeDisplay(farenheit + ' F');
   if(low > farenheit){
     low = farenheit;
   }
