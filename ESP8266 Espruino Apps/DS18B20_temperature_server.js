@@ -24,7 +24,7 @@ E.on('init', function() {
       }
       console.log('Connected!');
       setupSensors();
-      setInterval(sendTempToAdafruit, 60000);
+      startMqtt();
     }
   );
 });
@@ -57,33 +57,24 @@ function processTemp(celcius){
   sum += farenheit;
 }
 
-function sendTempToAdafruit(){
-  calcTemps();
-  var payload = JSON.stringify({
-    value: (sum/Object.keys(sensors).length)
-  });
-  var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
-  var opts = {
-    host: 'io.adafruit.com',
-    path: path,
-    method: 'POST',
-    protocol: 'https:',
-    headers: {
-      'X-AIO-KEY': adafruit_api_key,
-      'Content-Length': payload.length,
-      'Content-Type': 'application/json'
-    }
-  };
+var mqtt;
 
-  var req = require('http').request(opts, function(res){
-    res.on('data', function(data) {
-     //console.log("HTTP> "+data);
-    });
+function startMqtt(){
+  mqtt = require("MQTT").connect({
+    host: "io.adafruit.com",
+    port: 1883,
+    protocol_level: 0,
+    username: adafruit_username,
+    password: adafruit_api_key
   });
-  req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
-  });
-  req.end(payload);
+  setInterval(mqttPublishTemp, 60000);
+}
+
+function mqttPublishTemp(status){
+  calcTemps();
+  var avg_temp = sum / Object.keys(sensors).length;
+  var feed = adafruit_username + '/feeds/' + adafruit_feed;
+  mqtt.publish(feed, avg_temp);
 }
 
 save(); // make sure everything loads on restart
