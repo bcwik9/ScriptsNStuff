@@ -8,7 +8,6 @@ var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
 var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
-var http = require('http');
 var sensors = {};
 var high, low, sum;
 
@@ -28,7 +27,7 @@ E.on('init', function() {
       }
       console.log('Connected!');
       setupSensors();
-      setInterval(sendTempToAdafruit, 60000);
+      setInterval(mqttPublish, 60000);
       runServer();
     }
   );
@@ -63,36 +62,8 @@ function processTemp(celcius){
   sum += farenheit;
 }
 
-function sendTempToAdafruit(){
-  calcTemps();
-  var payload = JSON.stringify({
-    value: (sum/Object.keys(sensors).length)
-  });
-  var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
-  var opts = {
-    host: 'io.adafruit.com',
-    path: path,
-    method: 'POST',
-    protocol: 'https:',
-    headers: {
-      'X-AIO-KEY': adafruit_api_key,
-      'Content-Length': payload.length,
-      'Content-Type': 'application/json'
-    }
-  };
-
-  var req = require('http').request(opts, function(res){
-    res.on('data', function(data) {
-     //console.log("HTTP> "+data);
-    });
-  });
-  req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
-  });
-  req.end(payload);
-}
-
 function runServer() {
+  var http = require('http');
   http.createServer(function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     calcTemps();
@@ -104,6 +75,25 @@ function runServer() {
       diff: (high-low)
     }));
   }).listen(3000);
+}
+
+var mqtt;
+
+function startMqtt(){
+  mqtt = require("MQTT").connect({
+    host: "io.adafruit.com",
+    port: 1883,
+    protocol_level: 0,
+    username: adafruit_username,
+    password: adafruit_api_key
+  });
+}
+
+function mqttPublish(status){
+  calcTemps();
+  avg_temp = sum / Object.keys(sensors).length
+  var feed = adafruit_username + '/feeds/' + adafruit_feed;
+  mqtt.publish(adafruit_feed, avg_temp);
 }
 
 save(); // make sure everything loads on restart
