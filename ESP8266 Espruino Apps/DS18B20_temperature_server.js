@@ -91,7 +91,7 @@ function startMqtt(){
 
 function mqttPublish(status){
   calcTemps();
-  avg_temp = sum / Object.keys(sensors).length
+  avg_temp = sum / Object.keys(sensors).length;
   var feed = adafruit_username + '/feeds/' + adafruit_feed;
   mqtt.publish(adafruit_feed, avg_temp);
 }
