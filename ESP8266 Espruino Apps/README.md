@@ -24,9 +24,12 @@ wifi.setHostname("MyDeviceName");
 wifi.save(); // load hostname even if power loss/restart
 ```
 
+### http_server.js: Simple HTTP Server
+- A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load.
+
 ### temerature_server.js: App that reads one wire temperature sensors (specifically a DS18B20 sensor).
 Additional Setup Instructions:
-- A server should be running. Get the IP of the ESP8266 (look at your router's DHCP client list), and navigate to that in a web browser in port 3000 (or whatever you set it to). It should look something like `192.168.0.100:3000`. A page should load with temperatures!
+- This should send temperatures to an [Adafruit IO account](https://io.adafruit.com) once set up.
 
 ### relay_server.js: App that controls a relay. Can turn on/off.
 Additional Setup Instructions:
