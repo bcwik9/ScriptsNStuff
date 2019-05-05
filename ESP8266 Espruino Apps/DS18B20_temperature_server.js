@@ -1,21 +1,19 @@
-var WIFI_NAME = 'WIFI SSID NAME';
-var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
-var hostname = 'EspTemperature';
-var onewire_pin = NodeMCU.D7;
-
 // send data to io.adafruit.com platform
-var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
-var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
-var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
+var adafruit_api_key = 'ADAFRUIT IO API KEY';
+var adafruit_username = 'ADAFRUIT IO USERNAME';
+var adafruit_feed = 'ADAFRUIT IO FEED NAME';
 
-// I2C, for displaying data on a SSD1306 screen
-var sda_pin = NodeMCU.D1;
-var scl_pin = NodeMCU.D2;
+// I2C, for displaying data on a 0.96" OLED SSD1306 screen
 var graphics;
-var sensors = {};
-var high, low, sum;
+
+// track sensors and temps
+var temps = {};
+var high, low, sum, sensors;
 
 E.on('init', function() {
+  var WIFI_NAME = 'WIFI SSID NAME';
+  var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
+  var hostname = "EspTemperature";
   var wifi = require('Wifi');
   wifi.setHostname(hostname);
   wifi.connect(
@@ -28,70 +26,92 @@ E.on('init', function() {
       }
       console.log('Connected!');
       setupSensors();
-      startMqtt();
-      startDisplay();
+      setInterval(sendTempToAdafruit, 60000);
+      setupDisplay();
     }
   );
 });
 
-function startDisplay(){
+function setupDisplay(){
+  var sda_pin = NodeMCU.D1;
+  var scl_pin = NodeMCU.D2;
   I2C1.setup({scl: scl_pin, sda: sda_pin});
-  graphics; = require("SSD1306").connect(I2C1, start);
+  graphics = require("SSD1306").connect(I2C1);
+  setInterval(writeDisplay, 5000);
 }
 
-function writeDisplay(msg){
-  //g.setFontVector(20); // set font size
-  g.drawString(msg,0,0);
-  g.flip(); // write to screen
+function writeDisplay(){
+  graphics.setFontVector(20); // set font size
+  var text = getAverageTemp() + ' F';
+  graphics.drawString(text, 10, 30);
+  graphics.flip(); // write to screen
 }
 
-function calcTemps(){
+function refreshTemps(){
+  sensors.forEach(function(sensor, index) {
+    var farenheit = sensor.getTemp() * 9/5 + 32;
+    temps[sensor.sCode] = farenheit;
+  });
+}
+
+function analyzeTemps(){
   high = -99999;
   low = 99999;
   sum = 0;
-  Object.keys(sensors).forEach(function(sensor_id, index) {
-    processTemp(sensors[sensor_id]);
+  Object.keys(temps).forEach(function(sensor_id, index) {
+    var farenheit = temps[sensor_id];
+    if(low > farenheit){
+      low = farenheit;
+    }
+    if(high < farenheit){
+      high = farenheit;
+    }
+    sum += farenheit;
   });
 }
 
 function setupSensors(){
-  var manager = require("OneWireTempManager").create([NodeMCU.D7]);
-  manager.callBack = function(sensor,temp) {
-     sensors[sensor.sCode] = temp;
-  };
-  manager.start();
-}
-
-function processTemp(celcius){
-  var farenheit = celcius * 9/5 + 32;
-  writeDisplay(farenheit + ' F');
-  if(low > farenheit){
-    low = farenheit;
-  }
-  if(high < farenheit){
-    high = farenheit;
-  }
-  sum += farenheit;
-}
-
-var mqtt;
-
-function startMqtt(){
-  mqtt = require("MQTT").connect({
-    host: "io.adafruit.com",
-    port: 1883,
-    protocol_level: 0,
-    username: adafruit_username,
-    password: adafruit_api_key
+  var ow = new OneWire(NodeMCU.D7);
+  sensors = ow.search().map(function (device) {
+    return require("DS18B20").connect(ow, device);
   });
-  setInterval(mqttPublishTemp, 60000);
+  if (sensors.length === 0) print("No OneWire devices found");
+  // make sure temps are no older than 5 seconds
+  setInterval(refreshTemps, 5000);
 }
 
-function mqttPublishTemp(status){
-  calcTemps();
-  var avg_temp = sum / Object.keys(sensors).length;
-  var feed = adafruit_username + '/feeds/' + adafruit_feed;
-  mqtt.publish(feed, avg_temp);
+function getAverageTemp(){
+  analyzeTemps();
+  return sum/Object.keys(temps).length;
+}
+
+function sendTempToAdafruit(){
+  var avg_temp = getAverageTemp();
+  var payload = JSON.stringify({
+    value: getAverageTemp()
+  });
+  var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
+  var opts = {
+    host: 'io.adafruit.com',
+    path: path,
+    method: 'POST',
+    protocol: 'https:',
+    headers: {
+      'X-AIO-KEY': adafruit_api_key,
+      'Content-Length': payload.length,
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = require('http').request(opts, function(res){
+    res.on('data', function(data) {
+     //console.log("HTTP> "+data);
+    });
+  });
+  req.on('error', function(e) {
+    console.log('problem with request: ' + e.message);
+  });
+  req.end(payload);
 }
 
 save(); // make sure everything loads on restart
