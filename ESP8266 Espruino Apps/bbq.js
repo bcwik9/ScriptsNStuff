@@ -38,7 +38,6 @@ function setDamperPosition(){
   var temp_diff = current_temp - desired_temp;
   var full_open_til_temp = -25;
   var full_close_at_temp = 2;
-  var partial_open_temp_range = Math.abs(full_open_til_temp - full_close_at_temp);
   var full_closed_duty = 0.34;
   var full_open_duty = 0.75;
   if(temp_diff < full_open_til_temp){
