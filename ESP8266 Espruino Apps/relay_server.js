@@ -30,10 +30,10 @@ function runServer() {
     var status = req.url.replace('/?', '');
     if(status === '/on'){
       digitalWrite(NodeMCU.D0, false);
-      sendDataToAdafruit(true);
+      sendDataToAdafruit('true');
     } else if (status === '/off'){
       digitalWrite(NodeMCU.D0, true);
-      sendDataToAdafruit(false);
+      sendDataToAdafruit('false');
     }
     res.end();
   }).listen(3000);
