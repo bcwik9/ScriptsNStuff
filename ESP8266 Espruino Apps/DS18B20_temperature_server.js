@@ -24,7 +24,7 @@ E.on('init', function() {
         console.log('Connection error: ' + err);
         return;
       }
-      console.log('Connected!');
+      console.log('Wifi connected to: ' + WIFI_NAME);
       setupSensors();
       setInterval(sendTempToAdafruit, 60000);
       setupDisplay();

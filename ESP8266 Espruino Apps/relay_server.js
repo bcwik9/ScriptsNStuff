@@ -1,13 +1,14 @@
-var WIFI_NAME = 'WIFI SSID NAME';
-var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
-
 // send data to io.adafruit.com platform
 var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
 var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
 E.on('init', function() {
+  var WIFI_NAME = 'WIFI SSID NAME';
+  var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
+  var hostname = "EspRelay";
   var wifi = require('Wifi');
+  wifi.setHostname(hostname);
   wifi.connect(
     WIFI_NAME,
     WIFI_OPTIONS,
@@ -16,9 +17,8 @@ E.on('init', function() {
         console.log('Connection error: ' + err);
         return;
       }
-      console.log('Connected!');
+      console.log('Wifi connected to: ' + WIFI_NAME);
       runServer();
-      startMqtt();
     }
   );
 });
@@ -30,30 +30,41 @@ function runServer() {
     var status = req.url.replace('/?', '');
     if(status === '/on'){
       digitalWrite(NodeMCU.D0, false);
-      mqttPublish(true);
+      sendDataToAdafruit(true);
     } else if (status === '/off'){
       digitalWrite(NodeMCU.D0, true);
-      mqttPublish(false);
+      sendDataToAdafruit(false);
     }
     res.end();
   }).listen(3000);
 }
 
-var mqtt;
-
-function startMqtt(){
-  mqtt = require("MQTT").connect({
-    host: "io.adafruit.com",
-    port: 1883,
-    protocol_level: 0,
-    username: adafruit_username,
-    password: adafruit_api_key
+function sendDataToAdafruit(datapoint){
+  var payload = JSON.stringify({
+    value: datapoint
   });
-}
+  var path = '/api/v2/' + adafruit_username + '/feeds/' + adafruit_feed + '/data';
+  var opts = {
+    host: 'io.adafruit.com',
+    path: path,
+    method: 'POST',
+    protocol: 'https:',
+    headers: {
+      'X-AIO-KEY': adafruit_api_key,
+      'Content-Length': payload.length,
+      'Content-Type': 'application/json'
+    }
+  };
 
-function mqttPublish(status){
-  var feed = adafruit_username + '/feeds/' + adafruit_feed;
-  mqtt.publish(adafruit_feed,status);
+  var req = require('http').request(opts, function(res){
+    res.on('data', function(data) {
+     //console.log("HTTP> "+data);
+    });
+  });
+  req.on('error', function(e) {
+    console.log('problem with request: ' + e.message);
+  });
+  req.end(payload);
 }
 
 save(); // make sure everything loads on restart

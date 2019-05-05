@@ -1,12 +1,11 @@
 // send data to io.adafruit.com platform via HTTP POST
-var WIFI_NAME = 'WIFI SSID NAME';
-var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
-
 var adafruit_api_key = 'IO.ADAFRUIT.COM API KEY';
 var adafruit_username = 'IO.ADAFRUIT.COM USERNAME';
 var adafruit_feed = 'IO.ADAFRUIT.COM FEED';
 
 E.on('init', function() {
+  var WIFI_NAME = 'WIFI SSID NAME';
+  var WIFI_OPTIONS = { password: 'WIFI PASSWORD' };
   var wifi = require('Wifi');
   wifi.connect(
     WIFI_NAME,
