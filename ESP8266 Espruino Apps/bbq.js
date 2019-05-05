@@ -46,7 +46,7 @@ function setDamperPosition(){
   } else if(temp_diff > full_close_at_temp){
     // above target temp, completely closed
     pwm(full_closed_duty);
-  } else if(temp_diff < 0){
+  } else if(temp_diff <= 0){
       // partially open, below target temp
       var duty_range = full_open_duty - full_closed_duty;
       var percentage = temp_diff / full_open_til_temp;
