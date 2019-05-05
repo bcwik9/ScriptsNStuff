@@ -41,6 +41,7 @@ function setupDisplay(){
 }
 
 function writeDisplay(){
+  graphics.clear();
   graphics.setFontVector(20); // set font size
   var text = getAverageTemp() + ' F';
   graphics.drawString(text, 10, 30);
