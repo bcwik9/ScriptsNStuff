@@ -35,22 +35,24 @@ function pwm(duty) {
 var current_temp = 75;
 var desired_temp = 225;
 function setDamperPosition(){
-  var temp_diff = current_temp - desired_temp;
-  var full_open_til_temp = -25;
-  var full_close_at_temp = 2;
-  var full_closed_duty = 0.34;
-  var full_open_duty = 0.75;
-  if(temp_diff < full_open_til_temp){
+  var full_open_offset_temp = -25;
+  var full_open_until = desired_temp + full_open_offset_temp; // temp at which we start closing the damper
+  var full_close_offset_temp = 2;
+  var full_close_at = desired_temp + full_close_offset_temp; // temp at which we completely close the damper
+  var partial_open_temp_range = full_close_at - full_open_until;
+  var full_close_duty = 0.3; // duty where the damper is completely closed
+  var full_open_duty = 0.7; // duty where the damper is completely open
+  if(current_temp < full_open_until){
     // below target temp, completely open
     pwm(full_open_duty);
-  } else if(temp_diff > full_close_at_temp){
+  } else if(current_temp > full_close_at){
     // above target temp, completely closed
-    pwm(full_closed_duty);
-  } else if(temp_diff <= 0){
-      // partially open, below target temp
-      var duty_range = full_open_duty - full_closed_duty;
-      var percentage = temp_diff / full_open_til_temp;
-      var partial_duty = full_close_duty + (duty_range * percentage);
-      pwm(partial_duty);
+    pwm(full_close_duty);
+  } else {
+    // partially open
+    var duty_range = full_open_duty - full_close_duty;
+    var duty_percentage = (full_close_at - current_temp) / partial_open_temp_range;
+    var partial_duty = full_close_duty + (duty_range * duty_percentage);
+    pwm(partial_duty);
   }
 }
