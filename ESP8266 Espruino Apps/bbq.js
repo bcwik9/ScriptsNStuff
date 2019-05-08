@@ -20,6 +20,21 @@ E.on('init', function() {
   );
 });
 
+function getCurrentTemp(){
+  var reading = analogRead(A0); // between 0 and 1
+  var known_resistor = 10000; // ohms
+  var ohms = known_resistor*reading/(1-reading);
+  // steinhart equation
+  var stein_a = 0.005304267469;
+  var stein_b = -0.0003267544608;
+  var stein_c = 0.0000004967505701;
+  var log_r = Math.log(ohms);
+  var kelvin = 1 / (stein_a + stein_b*log_r + stein_c * Math.pow(log_r, 3));
+  var celcius = kelvin - 273.15;
+  var farenheit = celcius * 9 / 5 + 32;
+  return farenheit;
+}
+
 var servo_frequency = 333; // Hertz
 var servo_interval;
 function pwm(duty) {
@@ -32,9 +47,9 @@ function pwm(duty) {
   }, 1000/servo_frequency);
 }
 
-var current_temp = 75;
 var desired_temp = 225;
 function setDamperPosition(){
+  var current_temp = getCurrentTemp();
   var full_open_offset_temp = -25;
   var full_open_until = desired_temp + full_open_offset_temp; // temp at which we start closing the damper
   var full_close_offset_temp = 2;
