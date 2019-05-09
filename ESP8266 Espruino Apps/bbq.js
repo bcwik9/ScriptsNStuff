@@ -38,7 +38,7 @@ function getCurrentTemp(){
 var servo_frequency = 333; // Hertz
 var servo_interval;
 function pwm(duty) {
-  if ((typeof interval) !== "undefined") {
+  if ((typeof servo_interval) !== "undefined") {
     clearInterval(servo_interval);
     NodeMCU.D1.reset();
   }
@@ -71,3 +71,5 @@ function setDamperPosition(){
     pwm(partial_duty);
   }
 }
+
+save();
