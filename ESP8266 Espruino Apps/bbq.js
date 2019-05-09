@@ -21,6 +21,7 @@ E.on('init', function() {
 });
 
 function getCurrentTemp(){
+  reset_pwm(); // ensure pwm is stopped or temp reading will be off due to voltage fluctuation
   var reading = analogRead(A0); // between 0 and 1
   var known_resistor = 10000; // ohms
   var ohms = known_resistor*reading/(1-reading);
@@ -32,19 +33,25 @@ function getCurrentTemp(){
   var kelvin = 1 / (stein_a + stein_b*log_r + stein_c * Math.pow(log_r, 3));
   var celcius = kelvin - 273.15;
   var farenheit = celcius * 9 / 5 + 32;
+  console.log(farenheit);
   return farenheit;
 }
 
 var servo_frequency = 333; // Hertz
 var servo_interval;
-function pwm(duty) {
+function reset_pwm(){
   if ((typeof servo_interval) !== "undefined") {
     clearInterval(servo_interval);
     NodeMCU.D1.reset();
   }
+}
+
+function pwm(duty) {
+  console.log(duty);
   servo_interval = setInterval(function() {
     digitalPulse(NodeMCU.D1, 1, duty * (1000/servo_frequency));
   }, 1000/servo_frequency);
+  setTimeout(reset_pwm, 1000); // stop pwm, it's process/voltage intensive
 }
 
 var desired_temp = 225;
@@ -71,5 +78,4 @@ function setDamperPosition(){
     pwm(partial_duty);
   }
 }
-
 save();
