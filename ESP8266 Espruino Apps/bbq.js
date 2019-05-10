@@ -31,9 +31,9 @@ function getCurrentTemp(){
   var ohms = known_resistor*reading/(1-reading);
   console.log(ohms);
   // steinhart equation
-  var stein_a = 0.005304267469;
-  var stein_b = -0.0003267544608;
-  var stein_c = 0.0000004967505701;
+  var stein_a = 0.005998185780;
+  var stein_b = -0.0004320708284;
+  var stein_c = 0.0000008274750230;
   var log_r = Math.log(ohms);
   var kelvin = 1 / (stein_a + stein_b*log_r + stein_c * Math.pow(log_r, 3));
   var celcius = kelvin - 273.15;
