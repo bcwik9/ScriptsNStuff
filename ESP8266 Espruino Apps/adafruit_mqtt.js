@@ -26,14 +26,24 @@ E.on('init', function() {
 var mqtt;
 
 function startMqtt(){
-  mqtt = require("MQTT").connect({
+  var opts = {
     host: "io.adafruit.com",
     port: 1883,
     protocol_level: 0,
     username: adafruit_username,
     password: adafruit_api_key
+  };
+  mqtt = require("MQTT").connect(opts);
+  mqtt.on('connected', function() {
+    console.log('MQTT connected');
+    mqttPublish("hello world"); // send data
   });
-  mqttPublish("hello world"); // send data
+  mqtt.on('disconnected', function() {
+    console.log("MQTT disconnected... reconnecting.");
+    setTimeout(function() {
+      mqtt.connect(opts);
+    }, 1000);
+  });
 }
 
 function mqttPublish(status){
