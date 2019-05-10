@@ -24,16 +24,17 @@ E.on('init', function() {
   );
 });
 
+var ohm_total;
 function getCurrentTemp(){
   reset_pwm(); // ensure pwm is stopped or temp reading will be off due to voltage fluctuation
   var reading = analogRead(A0); // between 0 and 1
   var known_resistor = 10000; // ohms
   var ohms = known_resistor*reading/(1-reading);
-  console.log(ohms);
+  ohm_total += ohms;
   // steinhart equation
-  var stein_a = 0.005998185780;
-  var stein_b = -0.0004320708284;
-  var stein_c = 0.0000008274750230;
+  var stein_a = 0.0007342301572;
+  var stein_b = 0.0002020284136;
+  var stein_c = 0.00000002919156237;
   var log_r = Math.log(ohms);
   var kelvin = 1 / (stein_a + stein_b*log_r + stein_c * Math.pow(log_r, 3));
   var celcius = kelvin - 273.15;
@@ -61,7 +62,15 @@ var desired_temp = 225;
 var current_temp;
 var current_duty_percentage;
 function setDamperPosition(){
-  current_temp = getCurrentTemp();
+  ohm_total = 0;
+  var num_samples = 5.0;
+  current_temp = 0;
+  for (i = 0; i < num_samples; i++) {
+    // take a bunch of samples for better accuracy
+    current_temp += getCurrentTemp();
+  }
+  current_temp = current_temp / num_samples; // avg temp
+  //console.log(ohm_total/num_samples); // avg ohms
   var full_open_offset_temp = -5;
   var full_open_until = desired_temp + full_open_offset_temp; // temp at which we start closing the damper
   var full_close_offset_temp = 10;
@@ -99,11 +108,11 @@ function sendDamperToAdafruit(){
 }
 
 // send data to io.adafruit.com platform via HTTP POST
-var adafruit_api_key = 'ADAFRUIT API KEY';
-var adafruit_username = 'ADAFRUIT USERNAME';
+var adafruit_api_key = 'ADAFRUIT IO API KEY';
+var adafruit_username = 'ADAFRUIT IO USERNAME';
 var mqtt;
 function startMqtt(){
-  var opts = {
+    var opts = {
     host: "io.adafruit.com",
     port: 1883,
     protocol_level: 0,
