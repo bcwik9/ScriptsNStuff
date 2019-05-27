@@ -70,7 +70,10 @@ function startHttpServer(port){
 	    wifi.connect(a.query.ssid,{password:a.query.pwd},function(){
 		// TODO: If connect fails - this will not happen... need to handle errors
 		console.log("Connected to access point, ",wifi.getIP());
-		wifi.stopAP();
+		// stop AP after it has time to tell client it connected to wifi
+		setTimeout(function(){
+		    wifi.stopAP();
+		}, 15000);
 		//wifi.save();
 		res.end(`connected to ${wifi.getIP().ip}`);
 	    });
