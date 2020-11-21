@@ -1,7 +1,7 @@
 require 'btc_exchange'
 
 # create a list of exchange hash data
-marshal_loc = '/home/fonix/data/est/prod/misc/'
+marshal_loc = '/home/'
 exchange_names = ['MtGox', 'BTC China', 'Bitstamp']
 exchange_hashes = [
          File.open("#{marshal_loc}MtGoxExchange_history.dat") { |f| Marshal.load(f) },
